@@ -1,4 +1,4 @@
-# EgGMan
+# EgGMAn
 - This repository is for Deploying [EgGMAn](https://eggman.streamlit.app) (Engine of Game Music Analysis)
 - [EgGMAn](https://eggman.streamlit.app) retrieves music that has both the worldview of the game and the atmosphere of the scene
 
