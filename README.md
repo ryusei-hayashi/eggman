@@ -10,11 +10,11 @@
 
 ### Scene of Input Music
 - Input the scene of input music
-- Valence and Arousal are based on [Circumplex Model](https://en.wikipedia.org/wiki/Emotion_classification#Circumplex_model).
+- Valence and Arousal are based on [Circumplex Model](https://en.wikipedia.org/wiki/Emotion_classification#Circumplex_model)
 
 ### Scene of Output Music
 - Input the scene of output music
-- Valence and Arousal are based on [Circumplex Model](https://en.wikipedia.org/wiki/Emotion_classification#Circumplex_Model).
+- Valence and Arousal are based on [Circumplex Model](https://en.wikipedia.org/wiki/Emotion_classification#Circumplex_Model)
 
 ## System
 ### Input Music
