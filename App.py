@@ -157,6 +157,9 @@ def mel(y):
 def pad(y):
     return numpy.pad(y, ((0, x_n-y.shape[0]), (0, seq-y.shape[1])), constant_values=-1e-300)
 
+def collate(Y):
+    return numpy.array([pad(stft(trim(y))[:x_n,:seq]) for y in Y])[:,:,:,numpy.newaxis]
+
 @st.cache_resource(max_entries=1)
 def load_h5(f):
     m = VAE()
@@ -193,10 +196,6 @@ def filter(s, v, a):
 @st.cache_data(max_entries=2)
 def center(K):
     return numpy.mean(numpy.array([Z[k] for k in K]), axis=0)
-
-@st.cache_data(max_entries=1)
-def collate(Y):
-    return numpy.array([pad(stft(trim(y))[:x_n,:seq]) for y in Y])[:,:,:,numpy.newaxis]
 
 yd = YoutubeDL({'outtmpl': 'tmp', 'playlist_items': '1', 'format': 'mp3/bestaudio/best', 'postprocessors': [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3'}]})
 sp = spotipy.Spotify(auth_manager=spotipy.oauth2.SpotifyClientCredentials(st.secrets['id'], st.secrets['pw']))
