@@ -197,7 +197,7 @@ def filter(s, v, a):
 def center(K):
     return numpy.mean(numpy.array([Z[k] for k in K]), axis=0)
 
-yd = YoutubeDL({'outtmpl': 'tmp', 'playlist_items': '1', 'format': 'mp3/bestaudio/best', 'postprocessors': [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3'}]})
+yd = YoutubeDL({'outtmpl': 'tmp', 'playlist_items': '1', 'quite': True, 'format': 'mp3/bestaudio/best', 'postprocessors': [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3'}], 'overwrites': True})
 sp = spotipy.Spotify(auth_manager=spotipy.oauth2.SpotifyClientCredentials(st.secrets['id'], st.secrets['pw']))
 sr = 22050
 fps = 25
