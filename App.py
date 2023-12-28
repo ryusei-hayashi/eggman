@@ -134,8 +134,10 @@ class VAE(keras.Model):
         y = self.decoder(z)
         return y
 
-    def get_z(self, x):
-        return tf.convert_to_tensor(self.sample(self.encoder(x, training=False))).numpy()
+    def get_z(self, x, v):
+        x = self.encoder(x, training=False)
+        z = tf.convert_to_tensor(self.sample(x)) if v else x[:,:z_n]
+        return z.numpy()
 
 def trim(y):
     b = librosa.beat.beat_track(y=y, sr=sr, hop_length=sr//fps)[1]
@@ -171,7 +173,7 @@ def load_h5(f):
 def load_np(f):
     return numpy.load(f, allow_pickle=True).item()
 
-@st.cache_data(ttl='9m')
+@st.cache_data(max_entries=1)
 def download(s):
     try:
         if w == 'Spotify API':
@@ -257,7 +259,7 @@ if st.button('Retrieve', type='primary'):
     P = filter(sim + tim + wim + bim + pim + qim + aim, vim, zim)
     Q = filter(som + tom + wom + bom + pom + qom + aom, vom, zom)
     if P and Q:
-        z = M.get_z(collate([y]))[0] + center(Q) - center(P)
+        z = M.get_z(collate([y]), True)[0] + center(Q) - center(P)
         D = pandas.DataFrame([U[k] for k in sorted(Q, key=lambda k: numpy.linalg.norm(Z[k]-z))[:99]], columns=['URL', 'Name', 'Artist', 'Time'])
         st.dataframe(D, column_config={'URL': st.column_config.LinkColumn()})
     else:
