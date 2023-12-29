@@ -159,6 +159,12 @@ def mel(y):
 def pad(y):
     return numpy.pad(y, ((0, x_n-y.shape[0]), (0, seq-y.shape[1])), constant_values=-1e-300)
 
+def filter(s, v, a):
+    return [k for k in Z if all(i in S[k] for i in s) and v[0] < V[k][0] < v[1] and a[0] < V[k][1] < a[1]]
+
+def center(K):
+    return numpy.mean(numpy.array([Z[k] for k in K]), axis=0)
+
 def collate(Y):
     return numpy.array([pad(stft(trim(y))[:x_n,:seq]) for y in Y])[:,:,:,numpy.newaxis]
 
@@ -191,15 +197,7 @@ def download(s):
         st.error(f'Error: Unable to access {s}')
         return numpy.zeros(1)
 
-@st.cache_data(max_entries=2)
-def filter(s, v, a):
-    return [k for k in Z if all(i in S[k] for i in s) and v[0] < V[k][0] < v[1] and a[0] < V[k][1] < a[1]]
-
-@st.cache_data(max_entries=2)
-def center(K):
-    return numpy.mean(numpy.array([Z[k] for k in K]), axis=0)
-
-yd = YoutubeDL({'outtmpl': 'tmp', 'playlist_items': '1', 'quite': True, 'format': 'mp3/bestaudio/best', 'postprocessors': [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3'}], 'overwrites': True})
+yd = YoutubeDL({'outtmpl': 'tmp', 'playlist_items': '1', 'quiet': True, 'format': 'mp3/bestaudio/best', 'postprocessors': [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3'}], 'overwrites': True})
 sp = spotipy.Spotify(auth_manager=spotipy.oauth2.SpotifyClientCredentials(st.secrets['id'], st.secrets['pw']))
 sr = 22050
 fps = 25
