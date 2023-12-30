@@ -136,16 +136,35 @@ class VAE(keras.Model):
         x = self.encoder(x, training=False)
         z = tf.convert_to_tensor(self.sample(x)) if v else x[:,:z_n]
         return z.numpy()
-    
-def load_np(k, f):
-    if not k in st.session_state:
-        st.session_state[k] = numpy.load(f, allow_pickle=True).item()
 
-def load_h5(k, f):
-    if not k in st.session_state:
-        st.session_state[k] = VAE()
-        st.session_state[k](tf.random.normal([1, x_n, seq, 1]))
-        st.session_state[k].load_weights(f)
+@st.cache_resource(max_entries=1)
+def load_h5(f):
+    m = VAE()
+    m(tf.random.normal([1, x_n, seq, 1]))
+    m.load_weights(f)
+    return m
+
+@st.cache_data(max_entries=4)
+def load_np(f):
+    return numpy.load(f, allow_pickle=True).item()
+
+@st.cache_data(max_entries=1)
+def download(s):
+    try:
+        if w == 'Spotify API':
+            open('tmp.mp3', 'wb').write(get(f'{sp.track(s.replace("intl-ja/", ""))["preview_url"]}.mp3').content)
+        elif w == 'Audiostock':
+            open('tmp.mp3', 'wb').write(get(f'{s}/play.mp3').content)
+        elif w == 'YoutubeDL':
+            yd.download([s])
+        elif w == 'Uploader':
+            open('tmp.mp3', 'wb').write(s.getbuffer())
+        src = f'data:audio/mp3;base64,{b64encode(open("tmp.mp3", "rb").read()).decode()}'
+        st.markdown(f'<audio src="{src}" controlslist="nodownload" controls></audio>', True)
+        return librosa.load('tmp.mp3', sr=sr, offset=10, duration=2*sec)[0]
+    except:
+        st.error(f'Error: Unable to access {s}')
+        return numpy.zeros(1)
 
 def trim(y):
     b = librosa.beat.beat_track(y=y, sr=sr, hop_length=sr//fps)[1]
@@ -171,28 +190,10 @@ def collate(Y):
     return numpy.array([pad(stft(trim(y))[:x_n,:seq]) for y in Y])[:,:,:,numpy.newaxis]
 
 def filter(s, v, a):
-    return [k for k in st.session_state['Z'] if all(i in st.session_state['S'][k] for i in s) and v[0] < st.session_state['V'][k][0] < v[1] and a[0] < st.session_state['V'][k][1] < a[1]]
+    return [k for k in Z if all(i in S[k] for i in s) and v[0] < V[k][0] < v[1] and a[0] < V[k][1] < a[1]]
 
 def center(K):
-    return numpy.mean(numpy.array([st.session_state['Z'][k] for k in K]), axis=0)
-
-@st.cache_data(max_entries=1)
-def download(s):
-    try:
-        if w == 'Spotify API':
-            open('tmp.mp3', 'wb').write(get(f'{sp.track(s.replace("intl-ja/", ""))["preview_url"]}.mp3').content)
-        elif w == 'Audiostock':
-            open('tmp.mp3', 'wb').write(get(f'{s}/play.mp3').content)
-        elif w == 'YoutubeDL':
-            yd.download([s])
-        elif w == 'Uploader':
-            open('tmp.mp3', 'wb').write(s.getbuffer())
-        src = f'data:audio/mp3;base64,{b64encode(open("tmp.mp3", "rb").read()).decode()}'
-        st.markdown(f'<audio src="{src}" controlslist="nodownload" controls></audio>', True)
-        return librosa.load('tmp.mp3', sr=sr, offset=10, duration=2*sec)[0]
-    except:
-        st.error(f'Error: Unable to access {s}')
-        return numpy.zeros(1)
+    return numpy.mean(numpy.array([Z[k] for k in K]), axis=0)
 
 yd = YoutubeDL({'outtmpl': 'tmp', 'playlist_items': '1', 'quiet': True, 'format': 'mp3/bestaudio/best', 'postprocessors': [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3'}], 'overwrites': True})
 sp = spotipy.Spotify(auth_manager=spotipy.oauth2.SpotifyClientCredentials(st.secrets['id'], st.secrets['pw']))
@@ -203,11 +204,11 @@ seq = 256
 z_n = 32
 x_n = 1024
 
-load_np('Z', 'data/vec.npy')
-load_np('S', 'data/scn.npy')
-load_np('V', 'data/vad.npy')
-load_np('U', 'data/url.npy')
-load_h5('M', 'data/vae.h5')
+M = load_h5('data/vae.h5')
+Z = load_np('data/vec.npy')
+S = load_np('data/scn.npy')
+V = load_np('data/vad.npy')
+U = load_np('data/url.npy')
 
 st.title('EgGMAn')
 st.write('EgGMAn (Engine of Game Music Analysis) retrieves music that has both the worldview of the game and the atmosphere of the scene.')
@@ -254,8 +255,8 @@ if st.button('Retrieve', type='primary'):
     p = filter(sim + tim + wim + bim + pim + qim + aim, vim, zim)
     q = filter(som + tom + wom + bom + pom + qom + aom, vom, zom)
     if p and q:
-        z = st.session_state['M'].get_z(collate([y]), True)[0] + center(q) - center(p)
-        d = DataFrame([st.session_state['U'][k] for k in sorted(q, key=lambda k: numpy.linalg.norm(st.session_state['Z'][k]-z))[:50]], columns=['URL', 'Name', 'Artist', 'Time'])
+        z = M.get_z(collate([y]), True)[0] + center(q) - center(p)
+        d = DataFrame([U[k] for k in sorted(q, key=lambda k: numpy.linalg.norm(Z[k]-z))[:50]], columns=['URL', 'Name', 'Artist', 'Time'])
         st.dataframe(d, column_config={'URL': st.column_config.LinkColumn()})
     else:
         st.error('Error: No music to fit the input scene')
