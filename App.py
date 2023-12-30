@@ -5,7 +5,6 @@ from base64 import b64encode
 from tensorflow import keras
 from statistics import mean
 from requests import get
-from uuid import uuid4
 import tensorflow_probability as tfp
 import tensorflow as tf
 import streamlit as st
@@ -19,8 +18,6 @@ if not os.path.exists('data'):
 
 st.set_page_config('EgGMAn', ':egg:', 'wide')
 st.sidebar.link_button('Contact Us', 'https://forms.gle/A4vWuEAp4pPEY4sf9', use_container_width=True)
-if not 'i' in st.session_state:
-    st.session_state.i = str(uuid4)
 
 class Conv1(keras.Model):
     def __init__(self, channel, kernel, stride, padding):
@@ -183,21 +180,21 @@ def center(K):
 def download(s):
     try:
         if w == 'Spotify API':
-            open(f'{st.session_state.i}.mp3', 'wb').write(get(f'{sp.track(s.replace("intl-ja/", ""))["preview_url"]}.mp3').content)
+            open('tmp.mp3', 'wb').write(get(f'{sp.track(s.replace("intl-ja/", ""))["preview_url"]}.mp3').content)
         elif w == 'Audiostock':
-            open(f'{st.session_state.i}.mp3', 'wb').write(get(f'{s}/play.mp3').content)
+            open('tmp.mp3', 'wb').write(get(f'{s}/play.mp3').content)
         elif w == 'YoutubeDL':
             yd.download([s])
         elif w == 'Uploader':
-            open(f'{st.session_state.i}.mp3', 'wb').write(s.getbuffer())
-        src = f'data:audio/mp3;base64,{b64encode(open(f"{st.session_state.i}.mp3", "rb").read()).decode()}'
+            open('tmp.mp3', 'wb').write(s.getbuffer())
+        src = f'data:audio/mp3;base64,{b64encode(open("tmp.mp3", "rb").read()).decode()}'
         st.markdown(f'<audio src="{src}" controlslist="nodownload" controls></audio>', True)
-        return librosa.load(f'{st.session_state.i}.mp3', sr=sr, offset=10, duration=2*sec)[0]
+        return librosa.load('tmp.mp3', sr=sr, offset=10, duration=2*sec)[0]
     except:
         st.error(f'Error: Unable to access {s}')
         return numpy.zeros(1)
 
-yd = YoutubeDL({'outtmpl': st.session_state.i, 'playlist_items': '1', 'quiet': True, 'format': 'mp3/bestaudio/best', 'postprocessors': [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3'}], 'overwrites': True})
+yd = YoutubeDL({'outtmpl': 'tmp', 'playlist_items': '1', 'quiet': True, 'format': 'mp3/bestaudio/best', 'postprocessors': [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3'}], 'overwrites': True})
 sp = spotipy.Spotify(auth_manager=spotipy.oauth2.SpotifyClientCredentials(st.secrets['id'], st.secrets['pw']))
 sr = 22050
 fps = 25
@@ -223,8 +220,8 @@ else:
     s = st.text_input('Input URL')
 if s:
     y = download(s)
-    if os.path.exists(f'{st.session_state.i}.mp3'):
-        os.remove(f'{st.session_state.i}.mp3')
+    if os.path.exists('tmp.mp3'):
+        os.remove('tmp.mp3')
 
 l, r = st.columns(2, gap='medium')
 
