@@ -9,3 +9,4 @@ yt-dlp
 pandas
 gdown
 numpy
+uuid
