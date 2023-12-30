@@ -1,17 +1,17 @@
-from statistics import mean
-from tensorflow import keras
-from yt_dlp import YoutubeDL
 from gdown import download_folder
+from yt_dlp import YoutubeDL
+from pandas import DataFrame
+from base64 import b64encode
+from tensorflow import keras
+from statistics import mean
+from requests import get
+from uuid import uuid4
 import tensorflow_probability as tfp
 import tensorflow as tf
 import streamlit as st
-import requests
 import spotipy
 import librosa
-import pandas
-import base64
 import numpy
-import uuid
 import os
 
 if not os.path.exists('data'):
@@ -20,7 +20,7 @@ if not os.path.exists('data'):
 st.set_page_config('EgGMAn', ':egg:', 'wide')
 st.sidebar.link_button('Contact Us', 'https://forms.gle/A4vWuEAp4pPEY4sf9', use_container_width=True)
 if not 'i' in st.session_state:
-    st.session_state.i = str(uuid.uuid4())
+    st.session_state.i = str(uuid4)
 
 class Conv1(keras.Model):
     def __init__(self, channel, kernel, stride, padding):
@@ -183,14 +183,14 @@ def center(K):
 def download(s):
     try:
         if w == 'Spotify API':
-            open(f'{st.session_state.i}.mp3', 'wb').write(requests.get(f'{sp.track(s.replace("intl-ja/", ""))["preview_url"]}.mp3').content)
+            open(f'{st.session_state.i}.mp3', 'wb').write(get(f'{sp.track(s.replace("intl-ja/", ""))["preview_url"]}.mp3').content)
         elif w == 'Audiostock':
-            open(f'{st.session_state.i}.mp3', 'wb').write(requests.get(f'{s}/play.mp3').content)
+            open(f'{st.session_state.i}.mp3', 'wb').write(get(f'{s}/play.mp3').content)
         elif w == 'YoutubeDL':
             yd.download([s])
         elif w == 'Uploader':
             open(f'{st.session_state.i}.mp3', 'wb').write(s.getbuffer())
-        src = f'data:audio/mp3;base64,{base64.b64encode(open(f"{st.session_state.i}.mp3", "rb").read()).decode()}'
+        src = f'data:audio/mp3;base64,{b64encode(open(f"{st.session_state.i}.mp3", "rb").read()).decode()}'
         st.markdown(f'<audio src="{src}" controlslist="nodownload" controls></audio>', True)
         return librosa.load(f'{st.session_state.i}.mp3', sr=sr, offset=10, duration=2*sec)[0]
     except:
@@ -258,7 +258,7 @@ if st.button('Retrieve', type='primary'):
     q = filter(som + tom + wom + bom + pom + qom + aom, vom, zom)
     if p and q:
         z = st.session_state['M'].get_z(collate([y]), True)[0] + center(q) - center(p)
-        d = pandas.DataFrame([st.session_state['U'][k] for k in sorted(q, key=lambda k: numpy.linalg.norm(st.session_state['Z'][k]-z))[:50]], columns=['URL', 'Name', 'Artist', 'Time'])
+        d = DataFrame([st.session_state['U'][k] for k in sorted(q, key=lambda k: numpy.linalg.norm(st.session_state['Z'][k]-z))[:50]], columns=['URL', 'Name', 'Artist', 'Time'])
         st.dataframe(d, column_config={'URL': st.column_config.LinkColumn()})
     else:
         st.error('Error: No music to fit the input scene')
