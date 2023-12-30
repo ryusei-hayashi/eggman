@@ -11,6 +11,7 @@ import librosa
 import pandas
 import base64
 import numpy
+import uuid
 import os
 
 if not os.path.exists('data'):
@@ -18,8 +19,8 @@ if not os.path.exists('data'):
 
 st.set_page_config('EgGMAn', ':egg:', 'wide')
 st.sidebar.link_button('Contact Us', 'https://forms.gle/A4vWuEAp4pPEY4sf9', use_container_width=True)
-if st.sidebar.button('Clear Cache', use_container_width=True):
-    st.cache_data.clear()
+if not 'i' in st.session_state:
+    st.session_state.i = str(uuid.uuid4())
 
 class Conv1(keras.Model):
     def __init__(self, channel, kernel, stride, padding):
@@ -138,6 +139,16 @@ class VAE(keras.Model):
         x = self.encoder(x, training=False)
         z = tf.convert_to_tensor(self.sample(x)) if v else x[:,:z_n]
         return z.numpy()
+    
+def load_np(k, f):
+    if not k in st.session_state:
+        st.session_state[k] = numpy.load(f, allow_pickle=True).item()
+
+def load_h5(k, f):
+    if not k in st.session_state:
+        st.session_state[k] = VAE()
+        st.session_state[k](tf.random.normal([1, x_n, seq, 1]))
+        st.session_state[k].load_weights(f)
 
 def trim(y):
     b = librosa.beat.beat_track(y=y, sr=sr, hop_length=sr//fps)[1]
@@ -159,45 +170,34 @@ def mel(y):
 def pad(y):
     return numpy.pad(y, ((0, x_n-y.shape[0]), (0, seq-y.shape[1])), constant_values=-1e-300)
 
-def filter(s, v, a):
-    return [k for k in Z if all(i in S[k] for i in s) and v[0] < V[k][0] < v[1] and a[0] < V[k][1] < a[1]]
-
-def center(K):
-    return numpy.mean(numpy.array([Z[k] for k in K]), axis=0)
-
 def collate(Y):
     return numpy.array([pad(stft(trim(y))[:x_n,:seq]) for y in Y])[:,:,:,numpy.newaxis]
 
-@st.cache_resource(max_entries=1)
-def load_h5(f):
-    m = VAE()
-    m(tf.random.normal([1, x_n, seq, 1]))
-    m.load_weights(f)
-    return m
+def filter(s, v, a):
+    return [k for k in st.session_state['Z'] if all(i in st.session_state['S'][k] for i in s) and v[0] < st.session_state['V'][k][0] < v[1] and a[0] < st.session_state['V'][k][1] < a[1]]
 
-@st.cache_data(max_entries=4)
-def load_np(f):
-    return numpy.load(f, allow_pickle=True).item()
+def center(K):
+    return numpy.mean(numpy.array([st.session_state['Z'][k] for k in K]), axis=0)
 
 @st.cache_data(max_entries=1)
 def download(s):
     try:
         if w == 'Spotify API':
-            open('tmp.mp3', 'wb').write(requests.get(f'{sp.track(s.replace("intl-ja/", ""))["preview_url"]}.mp3').content)
+            open(f'{st.session_state.i}.mp3', 'wb').write(requests.get(f'{sp.track(s.replace("intl-ja/", ""))["preview_url"]}.mp3').content)
         elif w == 'Audiostock':
-            open('tmp.mp3', 'wb').write(requests.get(f'{s}/play.mp3').content)
+            open(f'{st.session_state.i}.mp3', 'wb').write(requests.get(f'{s}/play.mp3').content)
         elif w == 'YoutubeDL':
             yd.download([s])
         elif w == 'Uploader':
-            open('tmp.mp3', 'wb').write(s.getbuffer())
-        src = f'data:audio/mp3;base64,{base64.b64encode(open("tmp.mp3", "rb").read()).decode()}'
+            open(f'{st.session_state.i}.mp3', 'wb').write(s.getbuffer())
+        src = f'data:audio/mp3;base64,{base64.b64encode(open(f"{st.session_state.i}.mp3", "rb").read()).decode()}'
         st.markdown(f'<audio src="{src}" controlslist="nodownload" controls></audio>', True)
-        return librosa.load('tmp.mp3', sr=sr, offset=10, duration=2*sec)[0]
+        return librosa.load(f'{st.session_state.i}.mp3', sr=sr, offset=10, duration=2*sec)[0]
     except:
         st.error(f'Error: Unable to access {s}')
         return numpy.zeros(1)
 
-yd = YoutubeDL({'outtmpl': 'tmp', 'playlist_items': '1', 'quiet': True, 'format': 'mp3/bestaudio/best', 'postprocessors': [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3'}], 'overwrites': True})
+yd = YoutubeDL({'outtmpl': st.session_state.i, 'playlist_items': '1', 'quiet': True, 'format': 'mp3/bestaudio/best', 'postprocessors': [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3'}], 'overwrites': True})
 sp = spotipy.Spotify(auth_manager=spotipy.oauth2.SpotifyClientCredentials(st.secrets['id'], st.secrets['pw']))
 sr = 22050
 fps = 25
@@ -206,11 +206,11 @@ seq = 256
 z_n = 32
 x_n = 1024
 
-M = load_h5('data/vae.h5')
-Z = load_np('data/vec.npy')
-S = load_np('data/scn.npy')
-V = load_np('data/vad.npy')
-U = load_np('data/url.npy')
+load_np('Z', 'data/vec.npy')
+load_np('S', 'data/scn.npy')
+load_np('V', 'data/vad.npy')
+load_np('U', 'data/url.npy')
+load_h5('M', 'data/vae.h5')
 
 st.title('EgGMAn')
 st.write('EgGMAn (Engine of Game Music Analysis) retrieves music that has both the worldview of the game and the atmosphere of the scene.')
@@ -223,8 +223,8 @@ else:
     s = st.text_input('Input URL')
 if s:
     y = download(s)
-    if os.path.exists('tmp.mp3'):
-        os.remove('tmp.mp3')
+    if os.path.exists(f'{st.session_state.i}.mp3'):
+        os.remove(f'{st.session_state.i}.mp3')
 
 l, r = st.columns(2, gap='medium')
 
@@ -254,11 +254,11 @@ with r:
 
 st.subheader('Output Music')
 if st.button('Retrieve', type='primary'):
-    P = filter(sim + tim + wim + bim + pim + qim + aim, vim, zim)
-    Q = filter(som + tom + wom + bom + pom + qom + aom, vom, zom)
-    if P and Q:
-        z = M.get_z(collate([y]), True)[0] + center(Q) - center(P)
-        D = pandas.DataFrame([U[k] for k in sorted(Q, key=lambda k: numpy.linalg.norm(Z[k]-z))[:99]], columns=['URL', 'Name', 'Artist', 'Time'])
-        st.dataframe(D, column_config={'URL': st.column_config.LinkColumn()})
+    p = filter(sim + tim + wim + bim + pim + qim + aim, vim, zim)
+    q = filter(som + tom + wom + bom + pom + qom + aom, vom, zom)
+    if p and q:
+        z = st.session_state['M'].get_z(collate([y]), True)[0] + center(q) - center(p)
+        d = pandas.DataFrame([st.session_state['U'][k] for k in sorted(q, key=lambda k: numpy.linalg.norm(st.session_state['Z'][k]-z))[:50]], columns=['URL', 'Name', 'Artist', 'Time'])
+        st.dataframe(d, column_config={'URL': st.column_config.LinkColumn()})
     else:
         st.error('Error: No music to fit the input scene')
