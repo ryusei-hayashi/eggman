@@ -148,7 +148,7 @@ def load_h5(f):
 def load_np(f):
     return numpy.load(f, allow_pickle=True).item()
 
-@st.cache_data(max_entries=1)
+@st.cache_data(ttl='9m')
 def download(s):
     try:
         if w == 'Spotify API':
