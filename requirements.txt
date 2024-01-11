@@ -7,5 +7,4 @@ spotipy
 librosa
 yt-dlp
 pandas
-gdown
 numpy
