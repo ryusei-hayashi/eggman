@@ -140,9 +140,9 @@ def download(i, o):
     while not os.path.exists(o):
         try:
             if not gdown.download(id=i, output=o):
-                sleep(1)
+                sleep(9)
         except:
-            sleep(1)
+            sleep(9)
 
 def trim(y):
     b = librosa.beat.beat_track(y=y, sr=sr, hop_length=sr//fps)[1]
