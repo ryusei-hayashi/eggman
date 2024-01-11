@@ -47,7 +47,6 @@
 * [librosa](https://librosa.org)
 * [yt-dlp](https://github.com/yt-dlp/yt-dlp)
 * [pandas](https://pandas.pydata.org)
-* [gdown](https://github.com/wkentaro/gdown)
 * [numpy](https://numpy.org)
 
 ## Licence
