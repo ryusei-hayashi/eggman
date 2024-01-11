@@ -11,7 +11,6 @@ import tensorflow as tf
 import streamlit as st
 import spotipy
 import librosa
-import gdown
 import numpy
 import os
 
@@ -136,13 +135,10 @@ class VAE(keras.Model):
         z = tf.convert_to_tensor(self.sample(x)) if v else x[:,:z_n]
         return z.numpy()
 
-def download(i, o):
-    while not os.path.exists(o):
-        try:
-            if not gdown.download(id=i, output=o):
-                sleep(9)
-        except:
-            sleep(9)
+def download(n):
+    while not os.path.exists(n):
+        open(n, 'wb').write(get(f'http://virgo.is.chs.nihon-u.ac.jp/~h5419056/EgGMAn/{n}').content)
+        sleep(9)
 
 def trim(y):
     b = librosa.beat.beat_track(y=y, sr=sr, hop_length=sr//fps)[1]
@@ -174,17 +170,17 @@ def center(K):
     return numpy.mean(numpy.array([Z[k] for k in K]), axis=0)
 
 @st.cache_resource(max_entries=1)
-def load_vae(i, o):
-    download(i, o)
+def load_vae(n):
+    download(n)
     m = VAE()
     m(tf.random.normal([1, x_n, seq, 1]))
-    m.load_weights(o)
+    m.load_weights(n)
     return m
 
 @st.cache_data(max_entries=4)
-def load_npy(i, o):
-    download(i, o)
-    return numpy.load(o, allow_pickle=True).item()
+def load_npy(n):
+    download(n)
+    return numpy.load(n, allow_pickle=True).item()
 
 @st.cache_data(ttl='9m')
 def load_mp3(m):
@@ -212,11 +208,11 @@ seq = 256
 z_n = 32
 x_n = 1024
 
-Z = load_npy('1eOJVXcW6vB6K_r5FHvbBZqGCkc03Mn1W', 'vec.npy')
-S = load_npy('1EdGHLalOEUlTb2PjvaFXmrFq9gk5kZ7f', 'scn.npy')
-V = load_npy('1H-mLvIWlpZlYAejV4bNVCLXQJLjruN0o', 'vad.npy')
-U = load_npy('1EMcVsf444KTYUzEwhJKUQu7vsLP7-lfY', 'url.npy')
-M = load_vae('1tvZKtk6a-udoXT68GipNvr3hW2KVbBYP', 'vae.h5')
+Z = load_npy('vec.npy')
+S = load_npy('scn.npy')
+V = load_npy('vad.npy')
+U = load_npy('url.npy')
+M = load_vae('vae.h5')
 
 st.title('EgGMAn')
 st.write('EgGMAn (Engine of Game Music Analysis) retrieves music that has both the worldview of the game and the atmosphere of the scene.')
