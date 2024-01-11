@@ -212,11 +212,11 @@ seq = 256
 z_n = 32
 x_n = 1024
 
-M = load_vae('1tvZKtk6a-udoXT68GipNvr3hW2KVbBYP', 'vae.h5')
 Z = load_npy('1eOJVXcW6vB6K_r5FHvbBZqGCkc03Mn1W', 'vec.npy')
 S = load_npy('1EdGHLalOEUlTb2PjvaFXmrFq9gk5kZ7f', 'scn.npy')
 V = load_npy('1H-mLvIWlpZlYAejV4bNVCLXQJLjruN0o', 'vad.npy')
 U = load_npy('1EMcVsf444KTYUzEwhJKUQu7vsLP7-lfY', 'url.npy')
+M = load_vae('1tvZKtk6a-udoXT68GipNvr3hW2KVbBYP', 'vae.h5')
 
 st.title('EgGMAn')
 st.write('EgGMAn (Engine of Game Music Analysis) retrieves music that has both the worldview of the game and the atmosphere of the scene.')
