@@ -122,7 +122,7 @@ class VAE(keras.Model):
         super().__init__()
         self.encoder = Encoder(z_n, z_n * (z_n + 1) // 2)
         self.decoder = Decoder(z_n, z_n * (z_n + 1) // 2)
-        self.sample = tfp.layers.MultivariateNormalTriL(z_n, activity_regularizer=tfp.layers.KLDivergenceRegularizer(tfp.distributions.Independent(tfp.distributions.Normal(tf.zeros(z_n), 1), 1), weight=1e-4))
+        self.sample = tfp.layers.MultivariateNormalTriL(z_n, activity_regularizer=tfp.layers.KLDivergenceRegularizer(tfp.distributions.Independent(tfp.distributions.Normal(tf.zeros(z_n), 1), 1)))
 
     def call(self, x):
         x = self.encoder(x)
