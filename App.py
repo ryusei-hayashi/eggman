@@ -138,7 +138,7 @@ class VAE(keras.Model):
 def download(n):
     while not os.path.exists(n):
         open(n, 'wb').write(get(f'http://virgo.is.chs.nihon-u.ac.jp/~h5419056/EgGMAn/{n}').content)
-        sleep(9)
+        sleep(1)
 
 def trim(y):
     b = librosa.beat.beat_track(y=y, sr=sr, hop_length=sr//fps)[1]
