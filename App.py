@@ -184,20 +184,22 @@ def load_npy(n):
 
 @st.cache_data(ttl='9m')
 def load_mp3(m):
-    try:
-        if w == 'Spotify API':
-            open('tmp.mp3', 'wb').write(get(f'{sp.track(sub("intl-.*?/", "", m))["preview_url"]}.mp3').content)
-        elif w == 'Audiostock':
-            open('tmp.mp3', 'wb').write(get(f'{m}/play.mp3').content)
-        elif w == 'YoutubeDL':
-            yd.download([m])
-        elif w == 'Uploader':
-            open('tmp.mp3', 'wb').write(m.getbuffer())
-        src = f'data:audio/mp3;base64,{b64encode(open("tmp.mp3", "rb").read()).decode()}'
-        st.markdown(f'<audio src="{src}" controlslist="nodownload" controls></audio>', True)
-        return librosa.load('tmp.mp3', sr=sr, offset=9, duration=2*sec)[0]
-    except:
-        st.error(f'Error: Unable to access {m}')
+    if m:
+        try:
+            if w == 'Spotify API':
+                open('tmp.mp3', 'wb').write(get(f'{sp.track(sub("intl-.*?/", "", m))["preview_url"]}.mp3').content)
+            elif w == 'Audiostock':
+                open('tmp.mp3', 'wb').write(get(f'{m}/play.mp3').content)
+            elif w == 'YoutubeDL':
+                yd.download([m])
+            elif w == 'Uploader':
+                open('tmp.mp3', 'wb').write(m.getbuffer())
+            src = f'data:audio/mp3;base64,{b64encode(open("tmp.mp3", "rb").read()).decode()}'
+            st.markdown(f'<audio src="{src}" controlslist="nodownload" controls></audio>', True)
+            return librosa.load('tmp.mp3', sr=sr, offset=9, duration=2*sec)[0]
+        except:
+            st.error(f'Error: Unable to access {m}')
+    return 0
 
 yd = YoutubeDL({'outtmpl': 'tmp', 'playlist_items': '1', 'quiet': True, 'format': 'mp3/bestaudio/best', 'postprocessors': [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3'}], 'overwrites': True})
 sp = spotipy.Spotify(auth_manager=spotipy.oauth2.SpotifyClientCredentials(st.secrets['id'], st.secrets['pw']))
@@ -223,10 +225,9 @@ if w == 'Uploader':
     m = st.file_uploader('Upload File')
 else:
     m = st.text_input('Input URL')
-if m:
-    y = load_mp3(m)
-    if os.path.exists('tmp.mp3'):
-        os.remove('tmp.mp3')
+y = load_mp3(m)
+if os.path.exists('tmp.mp3'):
+    os.remove('tmp.mp3')
 
 l, r = st.columns(2, gap='medium')
 
@@ -256,11 +257,14 @@ with r:
 
 st.subheader('Output Music')
 if st.button('Retrieve', type='primary'):
-    p = filter(sim + tim + wim + bim + pim + qim + aim, vim, zim)
-    q = filter(som + tom + wom + bom + pom + qom + aom, vom, zom)
-    if p and q:
-        z = M.get_z(collate([y]), True)[0] + center(q) - center(p)
-        d = DataFrame([U[k] for k in sorted(q, key=lambda k: numpy.linalg.norm(Z[k]-z))[:50]], columns=['URL', 'Name', 'Artist', 'Time'])
-        st.dataframe(d, column_config={'URL': st.column_config.LinkColumn()})
+    if y:
+        p = filter(sim + tim + wim + bim + pim + qim + aim, vim, zim)
+        q = filter(som + tom + wom + bom + pom + qom + aom, vom, zom)
+        if p and q:
+            z = M.get_z(collate([y]), True)[0] + center(q) - center(p)
+            d = DataFrame([U[k] for k in sorted(q, key=lambda k: numpy.linalg.norm(Z[k]-z))[:50]], columns=['URL', 'Name', 'Artist', 'Time'])
+            st.dataframe(d, column_config={'URL': st.column_config.LinkColumn()})
+        else:
+            st.error('Error: Too many conditions')
     else:
-        st.error('Error: No music to fit the input scene')
+        st.error('Error: No input music')
