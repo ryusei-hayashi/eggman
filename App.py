@@ -3,6 +3,7 @@ from pandas import DataFrame
 from base64 import b64encode
 from tensorflow import keras
 from statistics import mean
+from random import choice
 from requests import get
 from time import sleep
 from re import sub
@@ -163,8 +164,8 @@ def pad(y):
 def collate(Y):
     return numpy.array([pad(stft(trim(y))[:x_n,:seq]) for y in Y])[:,:,:,numpy.newaxis]
 
-def filter(s, v, a):
-    return [k for k in Z if all(i in S[k] for i in s) and v[0] < V[k][0] < v[1] and a[0] < V[k][1] < a[1]]
+def filter(s):
+    return {k for k in Z if all(i in S[k] for i in s)}
 
 def center(K):
     return numpy.mean(numpy.array([Z[k] for k in K]), axis=0)
@@ -199,7 +200,7 @@ def load_mp3(m):
             return librosa.load('tmp.mp3', sr=sr, offset=9, duration=2*sec)[0]
         except:
             st.error(f'Error: Unable to access {m}')
-    return 0
+    return numpy.empty(0)
 
 yd = YoutubeDL({'outtmpl': 'tmp', 'playlist_items': '1', 'quiet': True, 'format': 'mp3/bestaudio/best', 'postprocessors': [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3'}], 'overwrites': True})
 sp = spotipy.Spotify(auth_manager=spotipy.oauth2.SpotifyClientCredentials(st.secrets['id'], st.secrets['pw']))
@@ -213,7 +214,6 @@ x_n = 1024
 M = load_vae('vae.h5')
 Z = load_npy('vec.npy')
 S = load_npy('scn.npy')
-V = load_npy('vad.npy')
 U = load_npy('url.npy')
 
 st.title('EgGMAn')
@@ -240,8 +240,6 @@ with l:
     pim = st.multiselect('Place of input music', ['仮想現実', '外国', '都会', '田舎', '街', 'アジト', 'オフィス', 'ビル', 'ジム', '農地', '牧場', '工場', '研究所', '軍事基地', '学校', '公園', '病院', '法廷', '競技場', '美術館', '飛行機', '電車', '船', '橋', 'シアター', 'カジノ', '遊園地', '城', '遺跡', '神社', '寺院', '教会', '宮殿', '神殿', '聖域', 'レストラン', 'カフェ', 'ホテル', 'バー', '酒場', '店', '家', '廃墟', '高台'])
     qim = st.multiselect('Person of input music', ['主人公', '相棒', '仲間', '先人', '観衆', '日常', '非常', '敵', '孤独', '裏切者', '中ボス', 'ラスボス', 'ライバル', 'マスコット', 'ヒロイン', 'モブ'])
     aim = st.multiselect('Action of input music', ['移動', '走る', '泳ぐ', '飛ぶ', '運動', '競走', '遊ぶ', '休む', '考える', '閃く', '作業', '戦う', '潜入', '探索', '追う', '逃げる', '取引き', '宴', '勝利', '回想', '覚醒', '感動', '説得', '決意', '成長', '悩む', '出会い', '別れ', '登場', '不穏', '平穏', '解説', '熱狂', '困惑', '謀略', '犯罪', '暴力', 'ふざける', 'あおる', '恋愛', '感謝', '癒す', '励ます', '出掛ける'])
-    vim = st.slider('Valence of input music', -1.0, 1.0, (-1.0, 1.0))
-    zim = st.slider('Arousal of input music', -1.0, 1.0, (-1.0, 1.0))
 
 with r:
     st.subheader('Scene of Output Music')
@@ -252,19 +250,18 @@ with r:
     pom = st.multiselect('Place of output music', ['仮想現実', '外国', '都会', '田舎', '街', 'アジト', 'オフィス', 'ビル', 'ジム', '農地', '牧場', '工場', '研究所', '軍事基地', '学校', '公園', '病院', '法廷', '競技場', '美術館', '飛行機', '電車', '船', '橋', 'シアター', 'カジノ', '遊園地', '城', '遺跡', '神社', '寺院', '教会', '宮殿', '神殿', '聖域', 'レストラン', 'カフェ', 'ホテル', 'バー', '酒場', '店', '家', '廃墟', '高台'])
     qom = st.multiselect('Person of output music', ['主人公', '相棒', '仲間', '先人', '観衆', '日常', '非常', '敵', '孤独', '裏切者', '中ボス', 'ラスボス', 'ライバル', 'マスコット', 'ヒロイン', 'モブ'])
     aom = st.multiselect('Action of output music', ['移動', '走る', '泳ぐ', '飛ぶ', '運動', '競走', '遊ぶ', '休む', '考える', '閃く', '作業', '戦う', '潜入', '探索', '追う', '逃げる', '取引き', '宴', '勝利', '回想', '覚醒', '感動', '説得', '決意', '成長', '悩む', '出会い', '別れ', '登場', '不穏', '平穏', '解説', '熱狂', '困惑', '謀略', '犯罪', '暴力', 'ふざける', 'あおる', '恋愛', '感謝', '癒す', '励ます', '出掛ける'])
-    vom = st.slider('Valence of output music', -1.0, 1.0, (-1.0, 1.0))
-    zom = st.slider('Arousal of output music', -1.0, 1.0, (-1.0, 1.0))
 
 st.subheader('Output Music')
-if st.button('Retrieve', type='primary'):
-    if type(y) == numpy.ndarray:
-        p = filter(sim + tim + wim + bim + pim + qim + aim, vim, zim)
-        q = filter(som + tom + wom + bom + pom + qom + aom, vom, zom)
-        if p and q:
-            z = M.get_z(collate([y]), True)[0] + center(q) - center(p)
-            d = DataFrame([U[k] for k in sorted(q, key=lambda k: numpy.linalg.norm(Z[k]-z))[:50]], columns=['URL', 'Name', 'Artist', 'Time'])
-            st.dataframe(d, column_config={'URL': st.column_config.LinkColumn()})
-        else:
-            st.error('Error: Too many conditions')
+if st.button('Search', type='primary'):
+    p = filter(sim + tim + wim + bim + pim + qim + aim)
+    q = filter(som + tom + wom + bom + pom + qom + aom)
+    if y.size:
+        p, q = p - q, q - p
+    if p and q:
+        z = M.get_z(collate([y]), True)[0] + center(q) - center(p) if y.size else Z[choice(list(q))]
+        d = [U[k] for k in sorted(q, key=lambda k: numpy.linalg.norm(Z[k]-z))[:99]]
+        st.dataframe(DataFrame(d, columns=['URL', 'Name', 'Artist', 'Time']), column_config={'URL': st.column_config.LinkColumn()})
     else:
-        st.error('Error: No input music')
+        st.error('Too many conditions')
+else:
+    st.info('Search for music at EgGMAn' if y.size else 'Search for music at random')
