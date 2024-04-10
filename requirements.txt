@@ -1,6 +1,6 @@
-tensorflow-probability
 tensorflow
 statistics
+streamlit
 requests
 librosa
 spotipy
@@ -8,4 +8,5 @@ yt-dlp
 pandas
 numpy
 
-streamlit==1.31.0
+tensorflow-probability==0.23.0
+scipy==1.12.0
