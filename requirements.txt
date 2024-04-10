@@ -1,4 +1,4 @@
-tensorflow
+tensorflow-probability
 statistics
 streamlit
 requests
@@ -8,5 +8,5 @@ yt-dlp
 pandas
 numpy
 
-tensorflow-probability==0.23.0
+tensorflow==2.15.0
 scipy==1.12.0
