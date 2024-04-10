@@ -15,7 +15,7 @@ import librosa
 import numpy
 import os
 
-st.set_page_config('EgGMAn', ':egg:', 'wide')
+st.set_page_config('EgGMAn', ':musical_note:', 'wide')
 st.sidebar.link_button('Contact Us', 'https://forms.gle/A4vWuEAp4pPEY4sf9', use_container_width=True)
 
 class Conv1(keras.Model):
@@ -184,22 +184,20 @@ def load_npy(n):
     return numpy.load(n, allow_pickle=True).item()
 
 @st.cache_data(ttl='9m')
-def load_mp3(m):
-    if m:
+def load_mp3(u):
+    if u:
         try:
-            if w == 'Spotify API':
-                open('tmp.mp3', 'wb').write(get(f'{sp.track(sub("intl-.*?/", "", m))["preview_url"]}.mp3').content)
-            elif w == 'Audiostock':
-                open('tmp.mp3', 'wb').write(get(f'{m}/play.mp3').content)
+            if w == 'Audiostock':
+                open('tmp.mp3', 'wb').write(get(f'{u}/play').content)
+            elif w == 'Spotify API':
+                open('tmp.mp3', 'wb').write(get(f'{sp.track(sub("intl-.*?/", "", u))["preview_url"]}.mp3').content)
             elif w == 'YoutubeDL':
-                yd.download([m])
-            elif w == 'Uploader':
-                open('tmp.mp3', 'wb').write(m.getbuffer())
+                yd.download([u])
             src = f'data:audio/mp3;base64,{b64encode(open("tmp.mp3", "rb").read()).decode()}'
             st.markdown(f'<audio src="{src}" controlslist="nodownload" controls></audio>', True)
-            return librosa.load('tmp.mp3', sr=sr, offset=9, duration=2*sec)[0]
+            return librosa.load('tmp.mp3', sr=sr, offset=sec, duration=2*sec)[0]
         except:
-            st.error(f'Error: Unable to access {m}')
+            st.error(f'Error: Unable to access {u}')
     return numpy.empty(0)
 
 yd = YoutubeDL({'outtmpl': 'tmp', 'playlist_items': '1', 'quiet': True, 'format': 'mp3/bestaudio/best', 'postprocessors': [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3'}], 'overwrites': True})
@@ -217,17 +215,12 @@ S = load_npy('scn.npy')
 U = load_npy('url.npy')
 
 st.title('EgGMAn')
-st.write('EgGMAn (Engine of Game Music Analysis) retrieves music that has both the worldview of the game and the atmosphere of the scene.')
+st.write('EgGMAn (Engine of Game Music Analysis) searches for game music considering game and scene feature at the same time')
 
 st.subheader('Input Music')
-w = st.selectbox('Input Way', ['Spotify API', 'Audiostock', 'YoutubeDL', 'Uploader'])
-if w == 'Uploader':
-    m = st.file_uploader('Upload File')
-else:
-    m = st.text_input('Input URL')
-y = load_mp3(m)
-if os.path.exists('tmp.mp3'):
-    os.remove('tmp.mp3')
+w = st.selectbox('Input Way', ['Spotify API', 'YoutubeDL', 'Audiostock'])
+u = st.text_input('Input URL')
+y = load_mp3(u)
 
 l, r = st.columns(2, gap='medium')
 
@@ -252,6 +245,7 @@ with r:
     aom = st.multiselect('Action of output music', ['移動', '走る', '泳ぐ', '飛ぶ', '運動', '競走', '遊ぶ', '休む', '考える', '閃く', '作業', '戦う', '潜入', '探索', '追う', '逃げる', '取引き', '宴', '勝利', '回想', '覚醒', '感動', '説得', '決意', '成長', '悩む', '出会い', '別れ', '登場', '不穏', '平穏', '解説', '熱狂', '困惑', '謀略', '犯罪', '暴力', 'ふざける', 'あおる', '恋愛', '感謝', '癒す', '励ます', '出掛ける'])
 
 st.subheader('Output Music')
+w = st.selectbox('Search Target', ['Audiostock', 'Free Music'])
 if st.button('Search', type='primary'):
     p = filter(sim + tim + wim + bim + pim + qim + aim)
     q = filter(som + tom + wom + bom + pom + qom + aom)
@@ -264,4 +258,4 @@ if st.button('Search', type='primary'):
     else:
         st.error('Too many conditions')
 else:
-    st.info('Search for music at EgGMAn' if y.size else 'Search for music at random')
+    st.info('Search for music at ' + 'EgGMAn' if y.size else 'random')
