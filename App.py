@@ -187,11 +187,11 @@ def load_npy(n):
 def load_mp3(u):
     if u:
         try:
-            if s == 'Audiostock':
+            if 'audiostock' in u:
                 open('tmp.mp3', 'wb').write(get(f'{u}/play').content)
-            elif s == 'Spotify API':
+            elif 'spotify' in u:
                 open('tmp.mp3', 'wb').write(get(f'{sp.track(sub("intl-.*?/", "", u))["preview_url"]}.mp3').content)
-            elif s == 'YoutubeDL':
+            elif 'youtube' in u:
                 yd.download([u])
             src = f'data:audio/mp3;base64,{b64encode(open("tmp.mp3", "rb").read()).decode()}'
             st.markdown(f'<audio src="{src}" controlslist="nodownload" controls></audio>', True)
@@ -218,7 +218,6 @@ st.title('EgGMAn')
 st.write('EgGMAn (Engine of Game Music Analysis) search for game music considering game and scene feature at the same time')
 
 st.subheader('Source Music')
-s = st.selectbox('Source Type', ['Spotify', 'Youtube', 'Audiostock'])
 u = st.text_input('Source URL')
 y = load_mp3(u)
 
@@ -245,8 +244,8 @@ with r:
     ats = st.multiselect('Action of Target Scene', ['移動', '走る', '泳ぐ', '飛ぶ', '運動', '競走', '遊ぶ', '休む', '考える', '閃く', '作業', '戦う', '潜入', '探索', '追う', '逃げる', '取引き', '宴', '勝利', '回想', '覚醒', '感動', '説得', '決意', '成長', '悩む', '出会い', '別れ', '登場', '不穏', '平穏', '解説', '熱狂', '困惑', '謀略', '犯罪', '暴力', 'ふざける', 'あおる', '恋愛', '感謝', '癒す', '励ます', '出掛ける'])
 
 st.subheader('Target Music')
-t = st.selectbox('Target Type', ['Audiostock', 'Free Music'])
-if st.button('Search', type='primary'):
+t = st.radio('Target', ['Audiostock', 'Free Music'])
+if st.button(f'Search {"by EgGMAn" if y.size "at Random"}', type='primary'):
     p = filter(sss + tss + wss + bss + pss + qss + ass)
     q = filter(sts + tts + wts + bts + pts + qts + ats)
     if y.size:
@@ -257,5 +256,3 @@ if st.button('Search', type='primary'):
         st.dataframe(DataFrame(d, columns=['URL', 'Name', 'Artist', 'Time']), column_config={'URL': st.column_config.LinkColumn()})
     else:
         st.error('Too many conditions')
-else:
-    st.info(f'Search for Music at {"EgGMAn" if y.size else "Random"}')
