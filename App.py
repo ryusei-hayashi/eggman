@@ -245,7 +245,7 @@ with r:
 
 st.subheader('Target Music')
 t = st.radio('Target', ['Audiostock', 'Free Music'])
-if st.button(f'Search {"by EgGMAn" if y.size "at Random"}', type='primary'):
+if st.button(f'Search {"by EgGMAn" if y.size else "at Random"}', type='primary'):
     p = filter(sss + tss + wss + bss + pss + qss + ass)
     q = filter(sts + tts + wts + bts + pts + qts + ats)
     if y.size:
