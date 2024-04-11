@@ -131,9 +131,9 @@ class VAE(keras.Model):
         y = self.decoder(z)
         return y
 
-    def get_z(self, x, v):
+    def get_z(self, x, r):
         x = self.encoder(x, training=False)
-        z = tf.convert_to_tensor(self.sample(x)) if v else x[:,:z_n]
+        z = tf.convert_to_tensor(self.sample(x)) if r else x[:,:z_n]
         return z.numpy()
 
 def download(n):
@@ -215,40 +215,40 @@ S = load_npy('scn.npy')
 U = load_npy('url.npy')
 
 st.title('EgGMAn')
-st.write('EgGMAn (Engine of Game Music Analysis) searches for game music considering game and scene feature at the same time')
+st.write('EgGMAn (Engine of Game Music Analysis) search for game music considering game and scene feature at the same time')
 
-st.subheader('Input Music')
-w = st.selectbox('Input Way', ['Spotify API', 'YoutubeDL', 'Audiostock'])
-u = st.text_input('Input URL')
+st.subheader('Source Music')
+s = st.selectbox('Source Type', ['Spotify', 'Youtube', 'Audiostock'])
+u = st.text_input('Source URL')
 y = load_mp3(u)
 
 l, r = st.columns(2, gap='medium')
 
 with l:
-    st.subheader('Scene of Input Music')
-    sim = st.multiselect('State of input music', ['オープニング', 'タイトル', 'チュートリアル', 'ゲームオーバー', 'ゲームクリア', 'セレクト', 'ショップ', 'ミニイベント', 'セーブエリア', 'ワールドマップ', 'ダンジョン', 'ステージ', 'エンディング'])
-    tim = st.multiselect('Time of input music', ['春', '夏', '秋', '冬', '朝', '昼', '夜', '夕方', '休日', '古代', '中世', '近代', '現代', '未来'])
-    wim = st.multiselect('Weather of input music', ['晴れ', '虹', '雲', '嵐', '雪', '砂', '雨', '小雨', '混沌'])
-    bim = st.multiselect('Biome of input music', ['水上', '水中', '海', '湖', '川', '山', '島', '浜辺', '洞窟', '砂漠', '荒野', '草原', '熱帯', '森', '炎', '空', '宇宙', '異次元'])
-    pim = st.multiselect('Place of input music', ['仮想現実', '外国', '都会', '田舎', '街', 'アジト', 'オフィス', 'ビル', 'ジム', '農地', '牧場', '工場', '研究所', '軍事基地', '学校', '公園', '病院', '法廷', '競技場', '美術館', '飛行機', '電車', '船', '橋', 'シアター', 'カジノ', '遊園地', '城', '遺跡', '神社', '寺院', '教会', '宮殿', '神殿', '聖域', 'レストラン', 'カフェ', 'ホテル', 'バー', '酒場', '店', '家', '廃墟', '高台'])
-    qim = st.multiselect('Person of input music', ['主人公', '相棒', '仲間', '先人', '観衆', '日常', '非常', '敵', '孤独', '裏切者', '中ボス', 'ラスボス', 'ライバル', 'マスコット', 'ヒロイン', 'モブ'])
-    aim = st.multiselect('Action of input music', ['移動', '走る', '泳ぐ', '飛ぶ', '運動', '競走', '遊ぶ', '休む', '考える', '閃く', '作業', '戦う', '潜入', '探索', '追う', '逃げる', '取引き', '宴', '勝利', '回想', '覚醒', '感動', '説得', '決意', '成長', '悩む', '出会い', '別れ', '登場', '不穏', '平穏', '解説', '熱狂', '困惑', '謀略', '犯罪', '暴力', 'ふざける', 'あおる', '恋愛', '感謝', '癒す', '励ます', '出掛ける'])
+    st.subheader('Scene of Source Music')
+    sss = st.multiselect('State of Source Scene', ['オープニング', 'タイトル', 'チュートリアル', 'ゲームオーバー', 'ゲームクリア', 'セレクト', 'ショップ', 'ミニイベント', 'セーブエリア', 'ワールドマップ', 'ダンジョン', 'ステージ', 'エンディング'])
+    tss = st.multiselect('Time of Source Scene', ['春', '夏', '秋', '冬', '朝', '昼', '夜', '夕方', '休日', '古代', '中世', '近代', '現代', '未来'])
+    wss = st.multiselect('Weather of Source Scene', ['晴れ', '虹', '雲', '嵐', '雪', '砂', '雨', '小雨', '混沌'])
+    bss = st.multiselect('Biome of Source Scene', ['水上', '水中', '海', '湖', '川', '山', '島', '浜辺', '洞窟', '砂漠', '荒野', '草原', '熱帯', '森', '炎', '空', '宇宙', '異次元'])
+    pss = st.multiselect('Place of Source Scene', ['仮想現実', '外国', '都会', '田舎', '街', 'アジト', 'オフィス', 'ビル', 'ジム', '農地', '牧場', '工場', '研究所', '軍事基地', '学校', '公園', '病院', '法廷', '競技場', '美術館', '飛行機', '電車', '船', '橋', 'シアター', 'カジノ', '遊園地', '城', '遺跡', '神社', '寺院', '教会', '宮殿', '神殿', '聖域', 'レストラン', 'カフェ', 'ホテル', 'バー', '酒場', '店', '家', '廃墟', '高台'])
+    qss = st.multiselect('Person of Source Scene', ['主人公', '相棒', '仲間', '先人', '観衆', '日常', '非常', '敵', '孤独', '裏切者', '中ボス', 'ラスボス', 'ライバル', 'マスコット', 'ヒロイン', 'モブ'])
+    ass = st.multiselect('Action of Source Scene', ['移動', '走る', '泳ぐ', '飛ぶ', '運動', '競走', '遊ぶ', '休む', '考える', '閃く', '作業', '戦う', '潜入', '探索', '追う', '逃げる', '取引き', '宴', '勝利', '回想', '覚醒', '感動', '説得', '決意', '成長', '悩む', '出会い', '別れ', '登場', '不穏', '平穏', '解説', '熱狂', '困惑', '謀略', '犯罪', '暴力', 'ふざける', 'あおる', '恋愛', '感謝', '癒す', '励ます', '出掛ける'])
 
 with r:
-    st.subheader('Scene of Output Music')
-    som = st.multiselect('State of output music', ['オープニング', 'タイトル', 'チュートリアル', 'ゲームオーバー', 'ゲームクリア', 'セレクト', 'ショップ', 'ミニイベント', 'セーブエリア', 'ワールドマップ', 'ダンジョン', 'ステージ', 'エンディング'])
-    tom = st.multiselect('Time of output music', ['春', '夏', '秋', '冬', '朝', '昼', '夜', '夕方', '休日', '古代', '中世', '近代', '現代', '未来'])
-    wom = st.multiselect('Weather of output music', ['晴れ', '虹', '雲', '嵐', '雪', '砂', '雨', '小雨', '混沌'])
-    bom = st.multiselect('Biome of output music', ['水上', '水中', '海', '湖', '川', '山', '島', '浜辺', '洞窟', '砂漠', '荒野', '草原', '熱帯', '森', '炎', '空', '宇宙', '異次元'])
-    pom = st.multiselect('Place of output music', ['仮想現実', '外国', '都会', '田舎', '街', 'アジト', 'オフィス', 'ビル', 'ジム', '農地', '牧場', '工場', '研究所', '軍事基地', '学校', '公園', '病院', '法廷', '競技場', '美術館', '飛行機', '電車', '船', '橋', 'シアター', 'カジノ', '遊園地', '城', '遺跡', '神社', '寺院', '教会', '宮殿', '神殿', '聖域', 'レストラン', 'カフェ', 'ホテル', 'バー', '酒場', '店', '家', '廃墟', '高台'])
-    qom = st.multiselect('Person of output music', ['主人公', '相棒', '仲間', '先人', '観衆', '日常', '非常', '敵', '孤独', '裏切者', '中ボス', 'ラスボス', 'ライバル', 'マスコット', 'ヒロイン', 'モブ'])
-    aom = st.multiselect('Action of output music', ['移動', '走る', '泳ぐ', '飛ぶ', '運動', '競走', '遊ぶ', '休む', '考える', '閃く', '作業', '戦う', '潜入', '探索', '追う', '逃げる', '取引き', '宴', '勝利', '回想', '覚醒', '感動', '説得', '決意', '成長', '悩む', '出会い', '別れ', '登場', '不穏', '平穏', '解説', '熱狂', '困惑', '謀略', '犯罪', '暴力', 'ふざける', 'あおる', '恋愛', '感謝', '癒す', '励ます', '出掛ける'])
+    st.subheader('Scene of Target Music')
+    sts = st.multiselect('State of Target Scene', ['オープニング', 'タイトル', 'チュートリアル', 'ゲームオーバー', 'ゲームクリア', 'セレクト', 'ショップ', 'ミニイベント', 'セーブエリア', 'ワールドマップ', 'ダンジョン', 'ステージ', 'エンディング'])
+    tts = st.multiselect('Time of Target Scene', ['春', '夏', '秋', '冬', '朝', '昼', '夜', '夕方', '休日', '古代', '中世', '近代', '現代', '未来'])
+    wts = st.multiselect('Weather of Target Scene', ['晴れ', '虹', '雲', '嵐', '雪', '砂', '雨', '小雨', '混沌'])
+    bts = st.multiselect('Biome of Target Scene', ['水上', '水中', '海', '湖', '川', '山', '島', '浜辺', '洞窟', '砂漠', '荒野', '草原', '熱帯', '森', '炎', '空', '宇宙', '異次元'])
+    pts = st.multiselect('Place of Target Scene', ['仮想現実', '外国', '都会', '田舎', '街', 'アジト', 'オフィス', 'ビル', 'ジム', '農地', '牧場', '工場', '研究所', '軍事基地', '学校', '公園', '病院', '法廷', '競技場', '美術館', '飛行機', '電車', '船', '橋', 'シアター', 'カジノ', '遊園地', '城', '遺跡', '神社', '寺院', '教会', '宮殿', '神殿', '聖域', 'レストラン', 'カフェ', 'ホテル', 'バー', '酒場', '店', '家', '廃墟', '高台'])
+    qts = st.multiselect('Person of Target Scene', ['主人公', '相棒', '仲間', '先人', '観衆', '日常', '非常', '敵', '孤独', '裏切者', '中ボス', 'ラスボス', 'ライバル', 'マスコット', 'ヒロイン', 'モブ'])
+    ats = st.multiselect('Action of Target Scene', ['移動', '走る', '泳ぐ', '飛ぶ', '運動', '競走', '遊ぶ', '休む', '考える', '閃く', '作業', '戦う', '潜入', '探索', '追う', '逃げる', '取引き', '宴', '勝利', '回想', '覚醒', '感動', '説得', '決意', '成長', '悩む', '出会い', '別れ', '登場', '不穏', '平穏', '解説', '熱狂', '困惑', '謀略', '犯罪', '暴力', 'ふざける', 'あおる', '恋愛', '感謝', '癒す', '励ます', '出掛ける'])
 
-st.subheader('Output Music')
-w = st.selectbox('Search Target', ['Audiostock', 'Free Music'])
+st.subheader('Target Music')
+t = st.selectbox('Target Type', ['Audiostock', 'Free Music'])
 if st.button('Search', type='primary'):
-    p = filter(sim + tim + wim + bim + pim + qim + aim)
-    q = filter(som + tom + wom + bom + pom + qom + aom)
+    p = filter(sss + tss + wss + bss + pss + qss + ass)
+    q = filter(sts + tts + wts + bts + pts + qts + ats)
     if y.size:
         p, q = p - q, q - p
     if p and q:
@@ -258,4 +258,4 @@ if st.button('Search', type='primary'):
     else:
         st.error('Too many conditions')
 else:
-    st.info('Search for music at ' + 'EgGMAn' if y.size else 'random')
+    st.info(f'Search for Music at {"EgGMAn" if y.size else "Random"}')
