@@ -187,11 +187,11 @@ def load_npy(n):
 def load_mp3(u):
     if u:
         try:
-            if w == 'Audiostock':
+            if s == 'Audiostock':
                 open('tmp.mp3', 'wb').write(get(f'{u}/play').content)
-            elif w == 'Spotify API':
+            elif s == 'Spotify API':
                 open('tmp.mp3', 'wb').write(get(f'{sp.track(sub("intl-.*?/", "", u))["preview_url"]}.mp3').content)
-            elif w == 'YoutubeDL':
+            elif s == 'YoutubeDL':
                 yd.download([u])
             src = f'data:audio/mp3;base64,{b64encode(open("tmp.mp3", "rb").read()).decode()}'
             st.markdown(f'<audio src="{src}" controlslist="nodownload" controls></audio>', True)
