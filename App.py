@@ -224,7 +224,7 @@ y = load_mp3(u)
 l, r = st.columns(2, gap='medium')
 
 with l:
-    st.subheader('Scene of Source Music')
+    st.subheader('Source Scene')
     sss = st.multiselect('State of Source Scene', ['オープニング', 'タイトル', 'チュートリアル', 'ゲームオーバー', 'ゲームクリア', 'セレクト', 'ショップ', 'ミニイベント', 'セーブエリア', 'ワールドマップ', 'ダンジョン', 'ステージ', 'エンディング'])
     tss = st.multiselect('Time of Source Scene', ['春', '夏', '秋', '冬', '朝', '昼', '夜', '夕方', '休日', '古代', '中世', '近代', '現代', '未来'])
     wss = st.multiselect('Weather of Source Scene', ['晴れ', '虹', '雲', '嵐', '雪', '砂', '雨', '小雨', '混沌'])
@@ -234,7 +234,7 @@ with l:
     ass = st.multiselect('Action of Source Scene', ['移動', '走る', '泳ぐ', '飛ぶ', '運動', '競走', '遊ぶ', '休む', '考える', '閃く', '作業', '戦う', '潜入', '探索', '追う', '逃げる', '取引き', '宴', '勝利', '回想', '覚醒', '感動', '説得', '決意', '成長', '悩む', '出会い', '別れ', '登場', '不穏', '平穏', '解説', '熱狂', '困惑', '謀略', '犯罪', '暴力', 'ふざける', 'あおる', '恋愛', '感謝', '癒す', '励ます', '出掛ける'])
 
 with r:
-    st.subheader('Scene of Target Music')
+    st.subheader('Target Scene')
     sts = st.multiselect('State of Target Scene', ['オープニング', 'タイトル', 'チュートリアル', 'ゲームオーバー', 'ゲームクリア', 'セレクト', 'ショップ', 'ミニイベント', 'セーブエリア', 'ワールドマップ', 'ダンジョン', 'ステージ', 'エンディング'])
     tts = st.multiselect('Time of Target Scene', ['春', '夏', '秋', '冬', '朝', '昼', '夜', '夕方', '休日', '古代', '中世', '近代', '現代', '未来'])
     wts = st.multiselect('Weather of Target Scene', ['晴れ', '虹', '雲', '嵐', '雪', '砂', '雨', '小雨', '混沌'])
