@@ -244,7 +244,7 @@ with r:
     ats = st.multiselect('Action of Target Scene', ['移動', '走る', '泳ぐ', '飛ぶ', '運動', '競走', '遊ぶ', '休む', '考える', '閃く', '作業', '戦う', '潜入', '探索', '追う', '逃げる', '取引き', '宴', '勝利', '回想', '覚醒', '感動', '説得', '決意', '成長', '悩む', '出会い', '別れ', '登場', '不穏', '平穏', '解説', '熱狂', '困惑', '謀略', '犯罪', '暴力', 'ふざける', 'あおる', '恋愛', '感謝', '癒す', '励ます', '出掛ける'])
 
 st.subheader('Target Music')
-t = st.selectbox('Target Type', ['Audiostock', 'Free Music'])
+#t = st.selectbox('Target Type', ['Audiostock', 'Free Music'])
 if st.button(f'Search {"by EgGMAn" if y.size else "at Random"}', type='primary'):
     p = filter(sss + tss + wss + bss + pss + qss + ass)
     q = filter(sts + tts + wts + bts + pts + qts + ats)
