@@ -1,6 +1,6 @@
 import streamlit as st
 
-st.set_page_config('EgGMAn', ':egg:', 'wide')
+st.set_page_config('EgGMAn', ':musical_note:', 'wide')
 st.sidebar.link_button('Contact Us', 'https://forms.gle/A4vWuEAp4pPEY4sf9', use_container_width=True)
 
 def view(i, w, h):
@@ -14,15 +14,18 @@ view('1X0O0hd9EHayuhPaUyPzXYJZljInnRtgO', 700, 420)
 
 st.header('Text')
 
-st.subheader('Input Music')
-st.markdown('- Input music to be used in the created game\n- Choose input way from Spotify API, Audiostock, YoutubeDL, Uploader\n- YoutubeDL has many [Supported Sites](https://github.com/yt-dlp/yt-dlp/blob/master/supportedsites.md)')
+st.subheader('Source Music')
+st.markdown('- Enter the URL of Source Music to be included in the developing game\n- URL support Spotify, YouTube, Audiostock')
 
 l, r = st.columns(2, gap='medium')
 
 with l:
-    st.subheader('Scene of Input Music')
-    st.markdown('- Input the scene of input music\n- Valence and Arousal are based on [Circumplex Model](https://en.wikipedia.org/wiki/Emotion_classification#Circumplex_model)')
+    st.subheader('Source Scene')
+    st.markdown('- Enter the tag of Source Scene to include Source Music\n- Enter from about 170 tags, including "Opening", "Spring", etc')
 
 with r:
-    st.subheader('Scene of Output Music')
-    st.markdown('- Input the scene of output music\n- Valence and Arousal are based on [Circumplex Model](https://en.wikipedia.org/wiki/Emotion_classification#Circumplex_model)')
+    st.subheader('Target Scene')
+    st.markdown('- Enter the tag of Target Scene to include Target Music\n- Enter from about 170 tags, including "Opening", "Spring", etc')
+
+st.subheader('Target Music')
+st.markdown('- Search Target Music to be included in Target Scene\n- Search by EgGMAn if Source Music exists, or by Random if not')
