@@ -215,7 +215,7 @@ S = load_npy('scn.npy')
 U = load_npy('url.npy')
 
 st.title('EgGMAn')
-st.write('EgGMAn (Engine of Game Music Analysis) search for game music considering game and scene feature at the same time')
+st.markdown('- EgGMAn (Engine of Game Music Analysis) search for game music considering game and scene feature at the same time')
 
 st.subheader('Source Music')
 u = st.text_input('Source URL')
