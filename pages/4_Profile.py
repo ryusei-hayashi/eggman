@@ -1,6 +1,6 @@
 import streamlit as st
 
-st.set_page_config('EgGMAn', ':egg:', 'wide')
+st.set_page_config('EgGMAn', ':musical_note:', 'wide')
 st.sidebar.link_button('Contact Us', 'https://forms.gle/A4vWuEAp4pPEY4sf9', use_container_width=True)
 
 def profile(n, a, p, e):
