@@ -152,12 +152,6 @@ def trim(y):
 def stft(y):
     return librosa.magphase(librosa.stft(y=y, hop_length=sr//fps, n_fft=2*x_n-1))[0]
 
-def cqt(y):
-    return librosa.magphase(librosa.cqt(y=y, hop_length=sr//fps, n_bins=x_n, bins_per_octave=x_n//7))[0]
-
-def mel(y):
-    return librosa.feature.melspectrogram(y=y, hop_length=sr//fps, n_mels=x_n)
-
 def pad(y):
     return numpy.pad(y, ((0, x_n-y.shape[0]), (0, seq-y.shape[1])), constant_values=-1e-300)
 
