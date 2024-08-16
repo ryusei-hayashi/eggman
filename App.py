@@ -212,7 +212,7 @@ st.title('EgGMAn')
 st.markdown('- EgGMAn (Engine of Game Music Analysis) search for game music considering game and scene feature at the same time')
 
 st.subheader('Source Music')
-u = st.text_input('URL of Source Music', placeholder='Spotify, YouTube, Audiostock')
+u = st.text_input('URL of Source Music', placeholder='Spotify, YouTube, Hotlink')
 y = load_mp3(u)
 
 l, r = st.columns(2, gap='medium')
