@@ -219,7 +219,7 @@ l, r = st.columns(2, gap='medium')
 
 with l:
     st.subheader('Source Scene')
-    sss = st.multiselect('State of Source Scene', ['オープニング', 'タイトル', 'チュートリアル', 'ゲームオーバー', 'ゲームクリア', 'セレクト', 'ショップ', 'ミニイベント', 'セーブエリア', 'ワールドマップ', 'ダンジョン', 'ステージ', 'エンディング'], placeholder='Opening, Dungeon, ...')
+    sss = st.multiselect('State of Source Scene', ['Scene 1', 'オープニング', 'タイトル', 'チュートリアル', 'ゲームオーバー', 'ゲームクリア', 'セレクト', 'ショップ', 'ミニイベント', 'セーブエリア', 'ワールドマップ', 'ダンジョン', 'ステージ', 'エンディング'], placeholder='Opening, Dungeon, ...')
     tss = st.multiselect('Time of Source Scene', ['春', '夏', '秋', '冬', '朝', '昼', '夜', '夕方', '休日', '古代', '中世', '近代', '現代', '未来'], placeholder='Spring, Morning, ...')
     wss = st.multiselect('Weather of Source Scene', ['晴れ', '虹', '雲', '嵐', '雪', '砂', '雨', '小雨', '混沌'], placeholder='Sunny, Cloudy, ...')
     bss = st.multiselect('Biome of Source Scene', ['水上', '水中', '海', '湖', '川', '山', '島', '浜辺', '洞窟', '砂漠', '荒野', '草原', '熱帯', '森', '炎', '空', '宇宙', '異次元'], placeholder='Sea, Mountain, ...')
@@ -229,7 +229,7 @@ with l:
 
 with r:
     st.subheader('Target Scene')
-    sts = st.multiselect('State of Target Scene', ['オープニング', 'タイトル', 'チュートリアル', 'ゲームオーバー', 'ゲームクリア', 'セレクト', 'ショップ', 'ミニイベント', 'セーブエリア', 'ワールドマップ', 'ダンジョン', 'ステージ', 'エンディング'], placeholder='Opening, Dungeon, ...')
+    sts = st.multiselect('State of Target Scene', ['Scene 2', 'オープニング', 'タイトル', 'チュートリアル', 'ゲームオーバー', 'ゲームクリア', 'セレクト', 'ショップ', 'ミニイベント', 'セーブエリア', 'ワールドマップ', 'ダンジョン', 'ステージ', 'エンディング'], placeholder='Opening, Dungeon, ...')
     tts = st.multiselect('Time of Target Scene', ['春', '夏', '秋', '冬', '朝', '昼', '夜', '夕方', '休日', '古代', '中世', '近代', '現代', '未来'], placeholder='Spring, Morning, ...')
     wts = st.multiselect('Weather of Target Scene', ['晴れ', '虹', '雲', '嵐', '雪', '砂', '雨', '小雨', '混沌'], placeholder='Sunny, Cloudy, ...')
     bts = st.multiselect('Biome of Target Scene', ['水上', '水中', '海', '湖', '川', '山', '島', '浜辺', '洞窟', '砂漠', '荒野', '草原', '熱帯', '森', '炎', '空', '宇宙', '異次元'], placeholder='Sea, Mountain, ...')
