@@ -182,11 +182,11 @@ def load_mp3(u):
     if u:
         try:
             if 'youtube' in u:
-                u = f'{next(f["url"] for f in YouTube(u).streaming_data["adaptiveFormats"] if f["itag"] == 251)}.mp3'
-                print(u)
+                open('tmp.mp3', 'wb').write(get(f'{next(f["url"] for f in YouTube(u).streaming_data["adaptiveFormats"] if f["itag"] == 251)}.mp3').content)
             elif 'spotify' in u:
-                u = f'{sp.track(sub("intl-.*?/", "", u))["preview_url"]}.mp3'
-            open('tmp.mp3', 'wb').write(get(u).content)
+                open('tmp.mp3', 'wb').write(get(f'{sp.track(sub("intl-.*?/", "", u))["preview_url"]}.mp3').content)
+            else:
+                open('tmp.mp3', 'wb').write(get(u).content)
             src = f'data:audio/mp3;base64,{b64encode(open("tmp.mp3", "rb").read()).decode()}'
             st.markdown(f'<audio src="{src}" controlslist="nodownload" controls></audio>', True)
             return librosa.load('tmp.mp3', sr=sr, duration=30)[0]
