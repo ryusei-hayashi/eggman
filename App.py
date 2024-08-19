@@ -73,7 +73,7 @@ class ConvT5(keras.Model):
         self.ct3 = ConvT2(channel[1], (1, kernel[1]), (1, stride[1]), padding[1])
 
     def call(self, x=0, y=0):
-        return self.ct2(tf.nn.relu(self.ct1(y) + x)), self.ct3(y)
+        return self.ct2(tf.nn.relu(self.ct1(x) + y)), self.ct3(x)
 
 class Encoder(keras.Model):
     def __init__(self, c_n):
@@ -112,8 +112,8 @@ class Decoder(keras.Model):
         y = tf.nn.relu(y)
         y = self.fc2(y)
         y = tf.reshape(y, (-1, 1, 1, y.shape[-1]))
-        x, y = self.ct1(y=y)
-        x, y = self.ct2(x=x, y=y)
+        x, y = self.ct1(x=y)
+        x, y = self.ct2(x=y, y=x)
         y = self.ct3(y)
         x = tf.nn.relu(x + y)
         x = self.ct4(x)
