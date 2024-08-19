@@ -4,7 +4,7 @@ st.set_page_config('EgGMAn', ':musical_note:', 'wide')
 st.sidebar.link_button('Contact Us', 'https://forms.gle/A4vWuEAp4pPEY4sf9', use_container_width=True)
 
 def iframe(u, w, h):
-    st.html(f'<iframe src="{u}/preview" width="{w}" height="{h}"></iframe>')
+    st.markdown(f'<iframe src="{u}/preview" width="{w}" height="{h}"></iframe>', True)
 
 st.title('Library')
 
