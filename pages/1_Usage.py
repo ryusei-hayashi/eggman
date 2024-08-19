@@ -3,29 +3,25 @@ import streamlit as st
 st.set_page_config('EgGMAn', ':musical_note:', 'wide')
 st.sidebar.link_button('Contact Us', 'https://forms.gle/A4vWuEAp4pPEY4sf9', use_container_width=True)
 
-def view(i, w, h):
-    s = f'https://drive.google.com/file/d/{i}/preview'
-    st.markdown(f'<iframe src="{s}" width="{w}" height="{h}"></iframe>', True)
+def iframe(u, w, h):
+    st.html(f'<iframe src="{u}/preview" width="{w}" height="{h}"></iframe>')
 
 st.title('Usage')
 
-st.header('Video')
-view('1X0O0hd9EHayuhPaUyPzXYJZljInnRtgO', 700, 420)
-
-st.header('Text')
+iframe('https://drive.google.com/file/d/1X0O0hd9EHayuhPaUyPzXYJZljInnRtgO', 700, 420)
 
 st.subheader('Source Music')
-st.markdown('- Enter the URL of Source Music to be included in the developing game\n- URL support Spotify, YouTube, Audiostock')
+st.markdown('- Enter the URL of the music to use in developing game\n- URL support Spotify, YouTube, Hotlink')
 
 l, r = st.columns(2, gap='medium')
 
 with l:
     st.subheader('Source Scene')
-    st.markdown('- Enter the tag of Source Scene to include Source Music\n- Enter from about 170 tags, including "Opening", "Spring", etc')
+    st.markdown('- Enter the scene where Source Music is used\n- There are about 200 scenes including "Opening", "Spring", etc')
 
 with r:
     st.subheader('Target Scene')
-    st.markdown('- Enter the tag of Target Scene to include Target Music\n- Enter from about 170 tags, including "Opening", "Spring", etc')
+    st.markdown('- Enter the scene where Target Music is used\n- There are about 200 scenes including "Opening", "Spring", etc')
 
 st.subheader('Target Music')
-st.markdown('- Search Target Music to be included in Target Scene\n- Search by EgGMAn if Source Music exists, or by Random if not')
+st.markdown('- Enter the site of Target Music\n- Search for music to use in Target Scenes of developing game\n- Search by EgGMAn if Source Music exists, or by Random if not')
