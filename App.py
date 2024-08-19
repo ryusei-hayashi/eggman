@@ -2,6 +2,7 @@ from tensorflow_probability import distributions as td, layers as tl
 from statistics import mean, median
 from essentia import standard as es
 from gdown import download_folder
+from sclib import SoundcloudAPI
 from tensorflow import keras
 from pandas import DataFrame
 from base64 import b64encode
@@ -181,12 +182,14 @@ def load_npy(n):
 def load_mp3(u):
     if u:
         try:
+            if 'soundcloud' in u:
+                SoundcloudAPI().resolve(u).write_mp3_to(open('tmp.mp3', 'wb+'))
             if 'youtube' in u:
-                open('tmp.mp3', 'wb').write(get(next(f["url"] for f in YouTube(u).streaming_data["adaptiveFormats"] if f["itag"] == 251)).content)
+                open('tmp.mp3', 'wb+').write(get(next(f["url"] for f in YouTube(u).streaming_data["adaptiveFormats"] if f["itag"] == 251)).content)
             elif 'spotify' in u:
-                open('tmp.mp3', 'wb').write(get(f'{sp.track(sub("intl-.*?/", "", u))["preview_url"]}.mp3').content)
+                open('tmp.mp3', 'wb+').write(get(f'{sp.track(sub("intl-.*?/", "", u))["preview_url"]}.mp3').content)
             else:
-                open('tmp.mp3', 'wb').write(get(u).content)
+                open('tmp.mp3', 'wb+').write(get(u).content)
             src = f'data:audio/mp3;base64,{b64encode(open("tmp.mp3", "rb").read()).decode()}'
             st.markdown(f'<audio src="{src}" controlslist="nodownload" controls></audio>', True)
             return librosa.load('tmp.mp3', sr=sr, duration=30)[0]
