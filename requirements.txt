@@ -6,6 +6,7 @@ librosa
 spotipy
 pytube
 pandas
+sclib
 gdown
 numpy
 
