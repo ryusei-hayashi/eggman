@@ -24,4 +24,4 @@ with r:
     st.markdown('- Enter the scene where Target Music is used\n- There are about 200 scenes including "Opening", "Spring", etc')
 
 st.subheader('Target Music')
-st.markdown('- Enter the site of Target Music\n- Search for music to use in Target Scenes of developing game\n- Search by EgGMAn if Source Music exists, or by Random if not')
+st.markdown('- Enter the site of No Copyright Music\n- EgGMAn search music for Target Scene in developing game\n- EgGMAn searche randomly if there is no Source Music')
