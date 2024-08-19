@@ -3,10 +3,10 @@ from statistics import mean, median
 from essentia import standard as es
 from gdown import download_folder
 from tensorflow import keras
-from yt_dlp import YoutubeDL
 from pandas import DataFrame
 from base64 import b64encode
 from os.path import exists
+from pytube import YouTube
 from random import choice
 from requests import get
 from re import sub
@@ -182,11 +182,10 @@ def load_mp3(u):
     if u:
         try:
             if 'youtube' in u:
-                yd.download([u])
+                u = next(f['url'] for f in YouTube(u).streaming_data['adaptiveFormats'] if f['itag'] == 251)
             elif 'spotify' in u:
-                open('tmp.mp3', 'wb').write(get(f'{sp.track(sub("intl-.*?/", "", u))["preview_url"]}.mp3').content)
-            else:
-                open('tmp.mp3', 'wb').write(get(u).content)
+                u = f'{sp.track(sub("intl-.*?/", "", u))["preview_url"]}.mp3'
+            open('tmp.mp3', 'wb').write(get(u).content)
             src = f'data:audio/mp3;base64,{b64encode(open("tmp.mp3", "rb").read()).decode()}'
             st.markdown(f'<audio src="{src}" controlslist="nodownload" controls></audio>', True)
             return librosa.load('tmp.mp3', sr=sr, duration=30)[0]
@@ -197,7 +196,6 @@ def load_mp3(u):
 if not exists('data'):
     download_folder('https://drive.google.com/drive/folders/1dtQgYKSeulm3mNS9auJ8axRpxW9Fdz4-')
 
-yd = YoutubeDL({'outtmpl': 'tmp', 'playlist_items': '1', 'format': 'mp3/bestaudio/best', 'postprocessors': [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3'}], 'overwrites': True, 'cookiefile': 'cookies.txt', 'force_generic_extractor': True})
 sp = spotipy.Spotify(auth_manager=spotipy.oauth2.SpotifyClientCredentials(st.secrets['id'], st.secrets['pw']))
 sr = 22050
 seq = 256
