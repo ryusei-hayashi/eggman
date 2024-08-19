@@ -241,7 +241,8 @@ st.subheader('Target Music')
 stm = st.multiselect('Site of Target Music', ['BGMer', 'BGMusic', 'Nash Music Library', 'PeriTune', 'Senses Circuit', 'zukisuzuki BGM', 'ガレトコ', 'ユーフルカ', '音の園'], ['BGMer', 'BGMusic', 'Nash Music Library', 'PeriTune', 'Senses Circuit', 'zukisuzuki BGM', 'ガレトコ', 'ユーフルカ', '音の園'])
 if st.button(f'Search by {"EgGMAn" if y.size else "Random"}', type='primary'):
     p, q = filter(sss + tss + wss + bss + pss + qss + ass), filter(sts + tts + wts + bts + pts + qts + ats)
-    p, q = p - q, q - p if y.size else p, q
+    if y.size:
+        p, q = p - q, q - p
     if p and q:
         z = Z['a'] * vec(y) + center(q) - center(p) - Z['b'] if y.size else Z[choice(list(q))]
         d = [U[k] for k in sorted(q, key=lambda k: numpy.linalg.norm(Z[k] - z)) if k[0] in stm][:99]
