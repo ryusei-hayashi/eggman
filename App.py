@@ -192,7 +192,6 @@ def load_mp3(u):
             return librosa.load('tmp.mp3', sr=sr, duration=30)[0]
         except:
             st.error(f'Error: Unable to access {u}')
-            st.write(get(next(f["url"] for f in YouTube(u).streaming_data["adaptiveFormats"] if f["itag"] == 251)).status_code)
     return numpy.empty(0)
 
 if not exists('data'):
