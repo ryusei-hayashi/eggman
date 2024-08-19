@@ -184,10 +184,10 @@ def load_mp3(u):
         try:
             if 'soundcloud' in u:
                 SoundcloudAPI().resolve(u).write_mp3_to(open('tmp.mp3', 'wb+'))
-            if 'youtube' in u:
-                open('tmp.mp3', 'wb+').write(get(next(f["url"] for f in YouTube(u).streaming_data["adaptiveFormats"] if f["itag"] == 251)).content)
             elif 'spotify' in u:
                 open('tmp.mp3', 'wb+').write(get(f'{sp.track(sub("intl-.*?/", "", u))["preview_url"]}.mp3').content)
+            elif 'youtube' in u:
+                open('tmp.mp3', 'wb+').write(get(next(f["url"] for f in YouTube(u).streaming_data["adaptiveFormats"] if f["itag"] == 251)).content)
             else:
                 open('tmp.mp3', 'wb+').write(get(u).content)
             src = f'data:audio/mp3;base64,{b64encode(open("tmp.mp3", "rb").read()).decode()}'
