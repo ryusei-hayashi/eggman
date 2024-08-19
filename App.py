@@ -212,7 +212,7 @@ Z = load_npy('data/vec.npy')
 S = load_npy('data/scn.npy')
 U = load_npy('data/url.npy')
 
-st.image('eggman.png', use_column_width="never")
+st.image('eggman.png')
 st.markdown('- EgGMAn (Engine of Game Music Analysis) search for game music considering game and scene feature at the same time')
 
 st.subheader('Source Music')
