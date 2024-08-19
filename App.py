@@ -183,6 +183,7 @@ def load_mp3(u):
         try:
             if 'youtube' in u:
                 u = next(f['url'] for f in YouTube(u).streaming_data['adaptiveFormats'] if f['itag'] == 251)
+                print(u)
             elif 'spotify' in u:
                 u = f'{sp.track(sub("intl-.*?/", "", u))["preview_url"]}.mp3'
             open('tmp.mp3', 'wb').write(get(u).content)
