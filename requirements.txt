@@ -4,10 +4,10 @@ essentia
 requests
 librosa
 spotipy
-yt-dlp
 pandas
 gdown
 numpy
 
 tensorflow-probability==0.23.0
 tensorflow==2.15.0
+yt-dlp==2024.07.25
