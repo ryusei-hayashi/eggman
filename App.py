@@ -242,7 +242,7 @@ with r:
 
 st.subheader('Target Music')
 stm = st.multiselect('Site of Target Music', ['BGMer', 'BGMusic', 'Nash Music Library', 'PeriTune', 'Senses Circuit', 'zukisuzuki BGM', 'ガレトコ', 'ユーフルカ', '音の園'], ['BGMer', 'BGMusic', 'Nash Music Library', 'PeriTune', 'Senses Circuit', 'zukisuzuki BGM', 'ガレトコ', 'ユーフルカ', '音の園'])
-if st.button(f'Search by {"EgGMAn" if y.size else "Random"}', type='primary'):
+if st.button(f'{"EgGMAn" if y.size else "Random"} Search', type='primary'):
     p, q = filter(sss + tss + wss + bss + pss + qss + ass), filter(sts + tts + wts + bts + pts + qts + ats)
     if y.size:
         p, q = p - q, q - p
