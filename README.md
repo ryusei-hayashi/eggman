@@ -1,41 +1,38 @@
 # EgGMAn
 - This repository is for Deploying [EgGMAn](https://eggman.streamlit.app) (Engine of Game Music Analysis)
-- [EgGMAn](https://eggman.streamlit.app) retrieves music that has both the worldview of the game and the atmosphere of the scene
+- EgGMAn (Engine of Game Music Analysis) search for game music considering game and scene feature at the same time
 
 ## Usage
-### Input Music
-- Input music to be used in the created game
-- Choose input way from Spotify API, Audiostock, YoutubeDL, Uploader
-- YoutubeDL has many [Supported Sites](https://github.com/yt-dlp/yt-dlp/blob/master/supportedsites.md)
+### Source Music
+- Enter the URL of the music to use in developing game
+- URL support Spotify, SoundCloud, YouTube, Hotlink
 
-### Scene of Input Music
-- Input the scene of input music
-- Valence and Arousal are based on [Circumplex Model](https://en.wikipedia.org/wiki/Emotion_classification#Circumplex_model)
+### Source Scene
+- Enter the scene where Source Music is used
+- There are about 200 scenes including "Opening", "Spring", etc
 
-### Scene of Output Music
-- Input the scene of output music
-- Valence and Arousal are based on [Circumplex Model](https://en.wikipedia.org/wiki/Emotion_classification#Circumplex_Model)
+### Target Scene
+- Enter the scene where Target Music is used
+- There are about 200 scenes including "Opening", "Spring", etc
 
 ## System
-### Input Music
-- Convert the input music to the coordinate z in VAE
+### Source Music
+- Convert Source Music to vector ___z___
 
-### Scene of Input Music
-- Collect music for the same scene as the input scene
-- Convert collected music to coordinates in VAE
-- Compute the center p of the coordinates
+### Source Scene
+- Create a set of music to use in the same scene as Source Scene
+- Convert a set of music to a set of vector
+- Compute the center ___p___ of a set of vector
 
-### Scene of Output Music
-- Collect music for the same scene as the input scene
-- Convert collected music to coordinates in VAE
-- Compute the center q of the coordinates
+### Target Scene
+- Create a set of music to use in the same scene as Target Scene
+- Convert a set of music to a set of vector
+- Compute the center ___q___ of a set of vector
 
-### Output Music
-- Move the coordinate z in the vector q - p direction
-- Retrieve music near the moved coordinate z
-
-## Package
-* [ffmpeg](https://ffmpeg.org)
+### Target Music
+- Compute vector ___z'___ by moving vector ___z___ toward ___q___ - ___p___
+- Compute the distance of vector ___z'___ and each music vector
+- Show music in order of distance
 
 ## Requirement
 * [tensorflow-probability](https://www.tensorflow.org/probability)
