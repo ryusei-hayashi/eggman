@@ -213,7 +213,7 @@ S = load_npy('data/scn.npy')
 U = load_npy('data/url.npy')
 
 st.image('eggman.png')
-st.markdown('- EgGMAn (Engine of Game Music Analysis) search for game music considering game and scene feature at the same time')
+st.markdown('EgGMAn (Engine of Game Music Analysis) search for game music considering game and scene feature at the same time')
 
 st.subheader('Source Music')
 y = load_mp3(st.text_input('URL of Source Music', placeholder='Spotify, SoundCloud, YouTube, Hotlink'))
