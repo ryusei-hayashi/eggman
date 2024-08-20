@@ -24,4 +24,4 @@ with r:
     st.markdown('- Create a set of music to use in the same scene as Target Scene\n- Convert a set of music to a set of vector\n- Compute the center ___q___ of a set of vector')
 
 st.subheader('Target Music')
-st.markdown("- Compute vector ___z'___ by moving vector ___z___ toward ___q - p___\n- Compute the distance of vector ___z'___ and each music vector\n- Show music in order of distance")
+st.markdown("- Compute vector ___z'___ by moving vector ___z___ toward ___q___ - ___p___\n- Compute the distance of vector ___z'___ and each music vector\n- Show music in order of distance")
