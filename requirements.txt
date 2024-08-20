@@ -3,8 +3,8 @@ statistics
 streamlit
 essentia
 requests
-librosa
 spotipy
+librosa
 pytube
 pandas
 gdown
