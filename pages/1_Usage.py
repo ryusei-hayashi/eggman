@@ -11,7 +11,7 @@ st.title('Usage')
 iframe('https://drive.google.com/file/d/1X0O0hd9EHayuhPaUyPzXYJZljInnRtgO', 700, 420)
 
 st.subheader('Source Music')
-st.markdown('- Enter the URL of the music to use in developing game\n- URL support Spotify, YouTube, Hotlink')
+st.markdown('- Enter the URL of the music to use in developing game\n- URL support Spotify, SoundCloud, YouTube, Hotlink')
 
 l, r = st.columns(2, gap='medium')
 
