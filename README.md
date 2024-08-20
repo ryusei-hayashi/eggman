@@ -37,13 +37,16 @@
 ## Requirement
 * [tensorflow-probability](https://www.tensorflow.org/probability)
 * [tensorflow](https://www.tensorflow.org)
+* [soundcloud-lib](https://github.com/thedtvn/soundcloud-lib)
 * [statistics](https://docs.python.org/3/library/statistics.html)
 * [streamlit](https://streamlit.io)
+* [essentia](https://essentia.upf.edu)
 * [requests](https://requests.readthedocs.io)
 * [spotipy](https://spotipy.readthedocs.io)
 * [librosa](https://librosa.org)
-* [yt-dlp](https://github.com/yt-dlp/yt-dlp)
+* [pytube](https://pytube.io)
 * [pandas](https://pandas.pydata.org)
+* [gdown](https://github.com/wkentaro/gdown)
 * [numpy](https://numpy.org)
 
 ## Licence
