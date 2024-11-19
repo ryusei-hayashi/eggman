@@ -119,7 +119,7 @@ def scene(c, s):
             v = st.slider(f'Valence of {s}', -1.0, 1.0, (-1.0, 1.0))
         with r:
             z = st.slider(f'Arousal of {s}', -1.0, 1.0, (-1.0, 1.0))
-    return T['scn'].map(lambda i: set(u + t + w + b + p + q + a).issubset(i)) & T['pn'].between(v[0], v[1]) & T['ap'].between(a[0], a[1])
+    return T['scn'].map(lambda i: set(u + t + w + b + p + q + a).issubset(i)) & T['pn'].between(v[0], v[1]) & T['ap'].between(z[0], z[1])
 
 def idx(a, v):
     i = numpy.searchsorted(a, v)
