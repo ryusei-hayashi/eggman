@@ -115,7 +115,7 @@ def scene(c, s):
         q = st.multiselect(f'Person of {s}', ['ゆるキャラ', 'ヒーロー', 'ヒロイン', 'スパイ', 'ライバル', 'ラスボス', 'ボス', 'モブ', '大衆', '貴族', '偉人', '仲間', '孤独', '平穏', '不穏', '敵'], placeholder='Hero, Rival, etc')
         a = st.multiselect(f'Action of {s}', ['戦う', '泳ぐ', '走る', '飛ぶ', '会話', '回想', '休憩', '出会う', '別れる', '勝利', '敗北', '探検', '特訓', '謎解き', '買い物', '恋愛'], placeholder='Battle, Run, etc')
         st.subheader(f'Emotion of {s}')
-        l, r = st.columns(2, gap='large')
+        l, r = st.columns(2, gap='medium')
         with l:
             v = st.slider(f'Valence of {s}', -1.0, 1.0, (-1.0, 1.0))
         with r:
