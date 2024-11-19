@@ -21,7 +21,7 @@ st.set_page_config('EgGMAn', layout='wide', menu_items={'Contact Us': 'https://f
 st.logo('logo.png', icon_image='icon.png')
 #st.sidebar.link_button('Contact Us', 'https://forms.gle/A4vWuEAp4pPEY4sf9', use_container_width=True)
 
-if not exists('data'):
+if not os.path.exists('data'):
     download_folder('https://drive.google.com/drive/folders/1AWUnFrzD8N-2bRyfm8m1oQNleQG_lKVZ')
 
 class Conv1(keras.Model):
