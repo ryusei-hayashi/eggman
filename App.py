@@ -139,15 +139,15 @@ def mold(y, b, p=-1e-99):
 def rand(l, s):
     return numpy.random.normal(l, s)
 
-def vec(y, r):
+def vec(y, s):
     t, b = librosa.beat.beat_track(y=y, sr=sr, units='samples')
-    m, d = numpy.split(M.predict(mold(y, b))[0], 2)
-    k, s, f = es.KeyExtractor(sampleRate=sr)(y)
+    u, v = numpy.split(M.predict(mold(y, b))[0], 2)
+    k, m, f = es.KeyExtractor(sampleRate=sr)(y)
     p, c = es.PitchMelodia(sampleRate=sr)(y)
     a = ['C', 'G', 'D', 'A', 'E', 'B', 'F#', 'C#', 'Ab', 'Eb', 'Bb', 'F'].index(k) * math.pi / 6
-    return numpy.r_[es.Loudness()(y), median(p[mean(c) < c]), t, f if 'a' in s else -f, f * math.cos(a), f * math.sin(a), rand(m, r * tf.math.softplus(d))]
+    return numpy.r_[es.Loudness()(y), median(p[mean(c) < c]), t, f if 'a' in s else -f, f * math.cos(a), f * math.sin(a), rand(u, s * tf.math.softplus(v))]
 
-sp = Spotify(auth_manager=oauth2.SpotifyClientCredentials('dcd3bbfb67b645c5a0a9c7568cbbc6dd', '566145b7875649989721a1bed96bc315'))
+sp = Spotify(auth_manager=oauth2.SpotifyClientCredentials(st.secrets['id'], st.secrets['pw']))
 sr = 22050
 seq = 256
 fps = 25
