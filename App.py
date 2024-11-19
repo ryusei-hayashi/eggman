@@ -19,7 +19,7 @@ import re
 import os
 
 st.set_page_config('EgGMAn', layout='wide')
-st.logo('imgs/logo.png', icon_image='imgs/icon.png')
+st.logo('imgs/logo.png', icon_image='imgs/icon.png', size='large')
 st.sidebar.link_button('Contact Us', 'https://forms.gle/A4vWuEAp4pPEY4sf9', use_container_width=True)
 
 if not os.path.exists('data'):
