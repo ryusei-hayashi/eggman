@@ -137,15 +137,15 @@ def mold(y, b, p=-1e-99):
     return y[None, :, :seq, None]
 
 def rand(l, s):
-    return numpy.random.normal(m, d)
+    return numpy.random.normal(l, s)
 
 def vec(y, r):
     t, b = librosa.beat.beat_track(y=y, sr=sr, units='samples')
-    m, v = numpy.split(M.predict(mold(y, b))[0], 2)
+    m, d = numpy.split(M.predict(mold(y, b))[0], 2)
     k, s, f = es.KeyExtractor(sampleRate=sr)(y)
     p, c = es.PitchMelodia(sampleRate=sr)(y)
     a = ['C', 'G', 'D', 'A', 'E', 'B', 'F#', 'C#', 'Ab', 'Eb', 'Bb', 'F'].index(k) * math.pi / 6
-    return numpy.r_[es.Loudness()(y), median(p[mean(c) < c]), t, f if 'a' in s else -f, f * math.cos(a), f * math.sin(a), rand(m, r * tf.math.softplus(v))]
+    return numpy.r_[es.Loudness()(y), median(p[mean(c) < c]), t, f if 'a' in s else -f, f * math.cos(a), f * math.sin(a), rand(m, r * tf.math.softplus(d))]
 
 sp = Spotify(auth_manager=oauth2.SpotifyClientCredentials('dcd3bbfb67b645c5a0a9c7568cbbc6dd', '566145b7875649989721a1bed96bc315'))
 sr = 22050
@@ -170,16 +170,16 @@ with st.popover('Search Option'):
     i = st.multiselect('Ignore Artist', ['ANDY', 'BGMer', 'Nash Music Library', 'Seiko', 'TAZ', 'hitoshi', 'zukisuzuki', 'たう', 'ガレトコ', 'ユーフルカ'])
     j = st.multiselect('Ignore Site', ['BGMer', 'BGMusic', 'Nash Music Library', 'PeriTune', 'Senses Circuit', 'zukisuzuki BGM', 'ガレトコ', 'ユーフルカ', '音の園'])
     t = st.slider('Time Range', time(0), time(1), (time(0), time(1)), timedelta(seconds=10), 'mm:ss')
-    r = st.slider('Random Rate', 0.0, 1.0, 1.0)
+    s = st.slider('Random Scale', 0.0, 1.0, 1.0)
 if st.button(f'Search {"EgGMAn" if y.size else "Random"}', type='primary'):
     try:
         if y.size:
-            P, Q = T[p & ~q], T[q & ~p]
-            z = a * vec(y, r) - b - P['vec'].mean() + Q['vec'].mean()
+            p, q = T[p & ~q], T[p & ~q]
+            z = a * vec(y, s) - b - p['vec'].mean() + q['vec'].mean()
         else:
-            Q = T[q]
-            z = rand(Q['vec'].mean(), r * numpy.stack(Q['vec']).std(0))
-        Q = Q[~Q['Artist'].isin(i) & ~Q['Site'].isin(j) & Q['Time'].between(t[0], t[1])]
-        st.dataframe(Q.iloc[numpy.argsort(((numpy.stack(Q['vec']) - z) ** 2).sum(1))[:99], :5], column_config={'URL': st.column_config.LinkColumn(), 'Time': st.column_config.TimeColumn(format='mm:ss')})
+            q = T[q]
+            z = rand(q['vec'].mean(), s * numpy.stack(q['vec']).std(0))
+        q = q[~q['Artist'].isin(i) & ~q['Site'].isin(j) & q['Time'].between(t[0], t[1])]
+        st.dataframe(q.iloc[numpy.argsort(((numpy.stack(q['vec']) - z) ** 2).sum(1))[:99], :5], column_config={'URL': st.column_config.LinkColumn(), 'Time': st.column_config.TimeColumn(format='mm:ss')})
     except:
         st.error('Too many conditions')
