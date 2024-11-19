@@ -18,8 +18,7 @@ import math
 import re
 import os
 
-st.set_page_config('EgGMAn', layout='wide')
-st.logo('imgs/logo.png', icon_image='imgs/icon.png', size='large')
+st.set_page_config('EgGMAn', ':musical note:', 'wide')
 st.sidebar.link_button('Contact Us', 'https://forms.gle/A4vWuEAp4pPEY4sf9', use_container_width=True)
 
 if not os.path.exists('data'):
@@ -156,7 +155,7 @@ bin = 1025
 M = model('data/model.pkl')
 T, a, b = table('data/table.pkl')
 
-st.title('EgGMAn')
+st.image('eggman.png')
 st.markdown('EgGMAn (Engine of Game Music Analogy) search for game music considering game and scene feature')
 
 st.header('Source Music')
