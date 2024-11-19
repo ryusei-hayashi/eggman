@@ -3,9 +3,10 @@ tensorflow-probability
 tensorflow
 pytubefix
 streamlit
-essentia
 requests
 spotipy
 librosa
 gdown
 numpy
+
+essentia==2.1
