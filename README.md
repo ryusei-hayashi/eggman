@@ -17,35 +17,33 @@
 
 ## System
 ### Source Music
-- Convert Source Music to vector ___z___
+- Convert Source Music to vector __z__
 
 ### Source Scene
 - Create a set of music to use in the same scene as Source Scene
 - Convert a set of music to a set of vector
-- Compute the center ___p___ of a set of vector
+- Compute the center __p__ of a set of vector
 
 ### Target Scene
 - Create a set of music to use in the same scene as Target Scene
 - Convert a set of music to a set of vector
-- Compute the center ___q___ of a set of vector
+- Compute the center __q__ of a set of vector
 
 ### Target Music
-- Compute vector ___z'___ by moving vector ___z___ toward ___q___ - ___p___
-- Compute the distance of vector ___z'___ and each music vector
+- Compute vector __z'__ by moving vector __z__ toward __q__ - __p__
+- Compute the distance of vector __z'__ and each music vector
 - Show music in order of distance
 
 ## Requirement
 * [tensorflow-probability](https://www.tensorflow.org/probability)
 * [tensorflow](https://www.tensorflow.org)
 * [soundcloud-lib](https://github.com/thedtvn/soundcloud-lib)
-* [statistics](https://docs.python.org/3/library/statistics.html)
+* [pytubefix](https://pytubefix.readthedocs.io/)
 * [streamlit](https://streamlit.io)
 * [essentia](https://essentia.upf.edu)
 * [requests](https://requests.readthedocs.io)
 * [spotipy](https://spotipy.readthedocs.io)
 * [librosa](https://librosa.org)
-* [pytube](https://pytube.io)
-* [pandas](https://pandas.pydata.org)
 * [gdown](https://github.com/wkentaro/gdown)
 * [numpy](https://numpy.org)
 
