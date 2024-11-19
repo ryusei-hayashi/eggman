@@ -8,4 +8,5 @@ requests
 spotipy
 librosa
 gdown
-numpy
+
+numpy==1.26.4
