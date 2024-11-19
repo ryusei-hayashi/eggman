@@ -162,7 +162,7 @@ st.markdown('EgGMAn (Engine of Game Music Analogy) search for game music conside
 st.header('Source Music')
 y = music(st.text_input('URL of Source Music', placeholder='Spotify, SoundCloud, YouTube, Hotlink'))
 
-l, r = st.columns(2, gap='medium')
+l, r = st.columns(2, gap='large')
 p = scene(l, 'Source Scene')
 q = scene(r, 'Target Scene')
 
