@@ -1,14 +1,11 @@
 soundcloud-lib
-statistics
+tensorflow-probability
+tensorflow
+pytubefix
 streamlit
 essentia
 requests
 spotipy
 librosa
-pytube
-pandas
 gdown
 numpy
-
-tensorflow-probability==0.23.0
-tensorflow==2.15.0
