@@ -113,7 +113,8 @@ def scene(c, s):
         p = st.multiselect(f'Place of {s}', ['アジト', 'オフィス', 'カジノ', 'カフェ', 'キャバクラ', 'ジム', 'タワー', 'ナイトクラブ', 'ビル', 'プール', 'リゾート', 'レストラン', 'ロビー', '遺跡', '飲み屋', '駅', '仮想現実', '家', '外国', '街', '学校', '宮殿', '競技場', '教会', '橋', '軍事基地', '劇場', '研究機関', '公園', '工場', '港', '行政機関', '裁判所', '寺', '式場', '宿泊施設', '城塞', '神社', '神殿', '船', '村', '地下道', '庭', '邸宅', '鉄道', '店', '田舎', '都会', '動物園', '道路', '廃屋', '博物館', '畑', '飛行機', '病院', '墓', '牧場', '遊園地', '路地裏', '牢獄'], placeholder='Office, Casino, etc')
         q = st.multiselect(f'Person of {s}', ['ゆるキャラ', 'ヒーロー', 'ヒロイン', 'スパイ', 'ライバル', 'ラスボス', 'ボス', 'モブ', '大衆', '貴族', '偉人', '仲間', '孤独', '平穏', '不穏', '敵'], placeholder='Hero, Rival, etc')
         a = st.multiselect(f'Action of {s}', ['戦う', '泳ぐ', '走る', '飛ぶ', '会話', '回想', '休憩', '出会う', '別れる', '勝利', '敗北', '探検', '特訓', '謎解き', '買い物', '恋愛'], placeholder='Battle, Run, etc')
-        st.subheader(f'Emotion of {s}')
+        #st.subheader(f'Emotion of {s}')
+        st.markdown(f'__Emotion of {s}__')
         l, r = st.columns(2, gap='medium')
         with l:
             v = st.slider(f'Valence of {s}', -1.0, 1.0, (-1.0, 1.0))
@@ -155,7 +156,7 @@ bin = 1025
 M = model('data/model.pkl')
 T, a, b = table('data/table.pkl')
 
-st.image('eggman.png', width=250)
+st.image('eggman.png')
 st.markdown('EgGMAn (Engine of Game Music Analogy) search for game music considering game and scene feature')
 
 st.header('Source Music')
