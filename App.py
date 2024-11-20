@@ -155,7 +155,7 @@ bin = 1025
 M = model('data/model.pkl')
 T, a, b = table('data/table.pkl')
 
-st.image('32.png')
+st.image('11.png')
 st.markdown('EgGMAn (Engine of Game Music Analogy) search for game music considering game and scene feature')
 
 st.header('Source Music')
