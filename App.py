@@ -121,9 +121,12 @@ def scene(c, s):
             z = st.slider(f'Arousal of {s}', -1.0, 1.0, (-1.0, 1.0))
     return T['scn'].map(lambda i: set(u + t + w + b + p + q + a).issubset(i)) & T['pn'].between(v[0], v[1]) & T['ap'].between(z[0], z[1])
 
-def idx(a, v):
-    i = numpy.searchsorted(a, v)
-    return mean(a[i-1:i+1]) if 0 < i < len(a) else v
+def gauss(l, s):
+    return numpy.random.normal(l, s)
+
+def idx(n, v):
+    i = n.searchsorted(v)
+    return mean(n[i-1:i+1]) if 0 < i < len(n) else v
 
 def mel(y):
     return librosa.feature.melspectrogram(y=y, sr=sr, hop_length=sr//fps, n_mels=bin)
@@ -136,16 +139,13 @@ def mold(y, b, p=-1e-99):
     y = numpy.pad(y, ((0, 0), (0, max(0, seq - y.shape[1]))), constant_values=p)
     return y[None, :, :seq, None]
 
-def rand(l, s):
-    return numpy.random.normal(l, s)
-
 def vec(y, s):
     t, b = librosa.beat.beat_track(y=y, sr=sr, units='samples')
     u, v = numpy.split(M.predict(mold(y, b))[0], 2)
     k, m, f = es.KeyExtractor(sampleRate=sr)(y)
     p, c = es.PitchMelodia(sampleRate=sr)(y)
     a = ['C', 'G', 'D', 'A', 'E', 'B', 'F#', 'C#', 'Ab', 'Eb', 'Bb', 'F'].index(k) * math.pi / 6
-    return numpy.r_[es.Loudness()(y), median(p[mean(c) < c]), t, f if 'a' in s else -f, f * math.cos(a), f * math.sin(a), rand(u, s * tf.math.softplus(v))]
+    return numpy.r_[es.Loudness()(y), median(p[mean(c) < c]), t, f if 'a' in s else -f, f * math.cos(a), f * math.sin(a), gauss(u, s * tf.math.softplus(v))]
 
 sp = Spotify(auth_manager=oauth2.SpotifyClientCredentials(st.secrets['id'], st.secrets['pw']))
 sr = 22050
@@ -178,8 +178,8 @@ if st.button(f'Search {"EgGMAn" if y.size else "Random"}', type='primary'):
             z = a * vec(y, s) - b - p['vec'].mean() + q['vec'].mean()
         else:
             q = T[q]
-            z = rand(q['vec'].mean(), s * numpy.stack(q['vec']).std(0))
+            z = gauss(q['vec'].mean(), s * numpy.stack(q['vec']).std(0))
         o = q[~q['Artist'].isin(i) & ~q['Site'].isin(j) & q['Time'].between(t[0], t[1])]
-        st.dataframe(o.iloc[numpy.argsort(((numpy.stack(o['vec']) - z) ** 2).sum(1))[:99], :5], column_config={'URL': st.column_config.LinkColumn(), 'Time': st.column_config.TimeColumn(format='mm:ss')})
+        st.dataframe(o.iloc[((numpy.stack(o['vec']) - z) ** 2).sum(1).argsort()[:99], :5], column_config={'URL': st.column_config.LinkColumn(), 'Time': st.column_config.TimeColumn(format='mm:ss')})
     except:
         st.error('Too many conditions')
