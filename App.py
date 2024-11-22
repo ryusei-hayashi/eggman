@@ -180,6 +180,6 @@ if st.button(f'Search {"EgGMAn" if y.size else "Random"}', type='primary'):
             q = T[q]
             z = gauss(q['vec'].mean(), s * numpy.stack(q['vec']).std(0))
         o = q[~q['Artist'].isin(i) & ~q['Site'].isin(j) & q['Time'].between(t[0], t[1])]
-        st.dataframe(o.iloc[((numpy.stack(o['vec']) - z) ** 2).sum(1).argsort()[:99], :5], column_config={'URL': st.column_config.LinkColumn(), 'Time': st.column_config.TimeColumn(format='mm:ss')})
+        st.dataframe(o.iloc[((numpy.stack(o['vec']) - z) ** 2).sum(1).argsort()[:99], :5].reset_index(drop=True), column_config={'URL': st.column_config.LinkColumn(), 'Time': st.column_config.TimeColumn(format='mm:ss')})
     except:
         st.error('Too many conditions')
