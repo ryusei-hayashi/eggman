@@ -88,14 +88,14 @@ def table(n):
 def music(u):
     if u:
         try:
-            if 'youtube' in u:
-                YouTube(u).streams.get_by_itag(251).download(filename='music.mp3')
-            elif 'soundcloud' in u:
+            if 'soundcloud' in u:
                 SoundcloudAPI().resolve(u).write_mp3_to(open('music.mp3', 'wb+'))
             elif 'spotify' in u:
-                open('music.mp3', 'wb').write(get(f'{sp.track(re.sub("intl-.*?/", "", u))["preview_url"]}.mp3').content)
+                open('music.mp3', 'wb+').write(get(sp.track(re.sub('intl-.*?/', '', u))['preview_url']).content)
+            elif 'youtube' in u:
+                open('music.mp3', 'wb+').write(get(next(f['url'] for f in YouTube(u).streaming_data['adaptiveFormats'][::-1] if 'audio' in f['mimeType'])).content)
             else:
-                open('music.mp3', 'wb').write(get(u).content)
+                open('music.mp3', 'wb+').write(get(u).content)
             s = f'data:audio/mp3;base64,{b64encode(open("music.mp3", "rb").read()).decode()}'
             st.markdown(f'<audio src="{s}" controlslist="nodownload" controls></audio>', True)
             return librosa.load('music.mp3', sr=sr, duration=30)[0]
