@@ -86,6 +86,23 @@ def table(n):
 
 @st.cache_data(ttl='9m')
 def music(u):
+    def music(u):
+    e = 'mp3' if 'spotify' in u or 'soundcloud' in u else 'm4a' if 'youtube' else u.split('.')[-1]
+    try:
+        if 'youtube' in u:
+            YouTube(u).streams.get_audio_only().download(filename='music')
+        elif 'soundcloud' in u:
+            SoundcloudAPI().resolve(u).write_mp3_to(open(f'music.{e}', 'wb+'))
+        elif 'spotify' in u:
+            open(f'music.{e}', 'wb').write(get(sp.track(re.sub('intl-.*?/', '', u))['preview_url']).content)
+        else:
+            open(f'music.{e}', 'wb').write(get(u).content)
+    except:
+        if not u:
+            print(f'\033[31mError\033[0m: Unable to access {u}')
+        return numpy.empty(0)
+    st.markdown(f'<audio src="data:audio;base64,{b64encode(open(f"music.{e}", "rb").read()).decode()}" controlslist="nodownload" controls></audio>', True)
+    return librosa.load(f'music.{e}', sr=sr, duration=30)[0]
     try:
         if 'soundcloud' in u:
             SoundcloudAPI().resolve(u).write_mp3_to(open('music.mp3', 'wb+'))
