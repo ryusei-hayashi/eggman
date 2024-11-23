@@ -86,22 +86,21 @@ def table(n):
 
 @st.cache_data(ttl='9m')
 def music(u):
-    if u:
-        try:
-            if 'soundcloud' in u:
-                SoundcloudAPI().resolve(u).write_mp3_to(open('music.mp3', 'wb+'))
-            elif 'spotify' in u:
-                open('music.mp3', 'wb+').write(get(sp.track(re.sub('intl-.*?/', '', u))['preview_url']).content)
-            elif 'youtube' in u:
-                open('music.mp3', 'wb+').write(get(next(f['url'] for f in YouTube(u).streaming_data['adaptiveFormats'][::-1] if 'audio' in f['mimeType'])).content)
-            else:
-                open('music.mp3', 'wb+').write(get(u).content)
-            s = f'data:audio/mp3;base64,{b64encode(open("music.mp3", "rb").read()).decode()}'
-            st.markdown(f'<audio src="{s}" controlslist="nodownload" controls></audio>', True)
-            return librosa.load('music.mp3', sr=sr, duration=30)[0]
-        except:
-            st.error(f'Error: Unable to access {u}')
-    return numpy.empty(0)
+    try:
+        if 'soundcloud' in u:
+            SoundcloudAPI().resolve(u).write_mp3_to(open('music.mp3', 'wb+'))
+        elif 'youtube' in u:
+            open('music.mp3', 'wb').write(get(next(f['url'] for f in YouTube(u).streaming_data['adaptiveFormats'][::-1] if 'audio' in f['mimeType'])).content)
+        elif 'spotify' in u:
+            open('music.mp3', 'wb').write(get(sp.track(re.sub('intl-.*?/', '', u))['preview_url']).content)
+        else:
+            open('music.mp3', 'wb').write(get(u).content)
+    except:
+        if not u:
+            print(f'\033[31mError\033[0m: Unable to access {u}')
+        return numpy.empty(0)
+    st.markdown('<audio controlslist="nodownload" controls><source src="music.mp3"></audio>', True)
+    return librosa.load('music.mp3', sr=sr, duration=30)[0]
 
 def scene(c, s):
     with c:
