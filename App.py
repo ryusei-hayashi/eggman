@@ -86,7 +86,6 @@ def table(n):
 
 @st.cache_data(ttl='9m')
 def music(u):
-    def music(u):
     e = 'mp3' if 'spotify' in u or 'soundcloud' in u else 'm4a' if 'youtube' else u.split('.')[-1]
     try:
         if 'youtube' in u:
