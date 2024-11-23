@@ -90,11 +90,11 @@ def music(u):
         if 'youtube' in u:
             YouTube(u).streams.get_audio_only().download(filename='music', mp3=True)
         elif 'soundcloud' in u:
-            SoundcloudAPI().resolve(u).write_mp3_to(open(f'music.mp3', 'wb+'))
+            SoundcloudAPI().resolve(u).write_mp3_to(open('music.mp3', 'wb+'))
         elif 'spotify' in u:
-            open(f'music.mp3', 'wb').write(get(sp.track(re.sub('intl-.*?/', '', u))['preview_url']).content)
+            open('music.mp3', 'wb').write(get(sp.track(re.sub('intl-.*?/', '', u))['preview_url']).content)
         else:
-            open(f'music.mp3', 'wb').write(get(u).content)
+            open('music.mp3', 'wb').write(get(u).content)
     except:
         if u:
             st.error(f'Error: Unable to access {u}')
