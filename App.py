@@ -97,7 +97,7 @@ def music(u):
             open(f'music.mp3', 'wb').write(get(u).content)
     except:
         if u:
-            print(f'\033[31mError\033[0m: Unable to access {u}')
+            st.error(f'Error: Unable to access {u}')
         return numpy.empty(0)
     st.markdown(f'<audio src="data:audio/mp3;base64,{b64encode(open("music.mp3", "rb").read()).decode()}" controlslist="nodownload" controls></audio>', True)
     return librosa.load('music.mp3', sr=sr, duration=30)[0]
