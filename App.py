@@ -99,7 +99,7 @@ def music(u):
         if not u:
             print(f'\033[31mError\033[0m: Unable to access {u}')
         return numpy.empty(0)
-    st.markdown('<audio controlslist="nodownload" controls><source src="music.mp3"></audio>', True)
+    st.markdown('<audio src="music.mp3" controls controlslist="nodownload"></audio>', True)
     return librosa.load('music.mp3', sr=sr, duration=30)[0]
 
 def scene(c, s):
