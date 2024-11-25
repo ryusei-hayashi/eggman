@@ -5,8 +5,8 @@ from essentia import standard as es
 from spotipy import Spotify, oauth2
 from gdown import download_folder
 from sclib import SoundcloudAPI
-from pytubefix import YouTube
 from tensorflow import keras
+from yt_dlp import YoutubeDL
 from base64 import b64encode
 from requests import get
 from pickle import load
@@ -88,7 +88,7 @@ def table(n):
 def music(u):
     try:
         if 'youtube' in u:
-            YouTube(u).streams.get_audio_only().download(filename='music', mp3=True)
+            yd.download([u])
         elif 'soundcloud' in u:
             SoundcloudAPI().resolve(u).write_mp3_to(open('music.mp3', 'wb+'))
         elif 'spotify' in u:
@@ -146,6 +146,7 @@ def vec(y, s):
     a = ['C', 'G', 'D', 'A', 'E', 'B', 'F#', 'C#', 'Ab', 'Eb', 'Bb', 'F'].index(k) * math.pi / 6
     return numpy.r_[es.Loudness()(y), median(p[mean(c) < c]), t, f if 'a' in s else -f, f * math.cos(a), f * math.sin(a), gauss(u, s * tf.math.softplus(v))]
 
+yd = YoutubeDL({'outtmpl': 'music', 'playlist_items': '1', 'format': 'bestaudio', 'postprocessors': [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3'}], 'overwrites': True})
 sp = Spotify(auth_manager=oauth2.SpotifyClientCredentials(st.secrets['id'], st.secrets['pw']))
 sr = 22050
 seq = 256
@@ -154,7 +155,7 @@ bin = 1025
 M = model('data/model.pkl')
 T, a, b = table('data/table.pkl')
 
-st.image('eggman.png')
+st.image('imgs/logo.png')
 st.markdown('EgGMAn (Engine of Game Music Analogy) search for game music considering game and scene feature')
 
 st.header('Source Music')
