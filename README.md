@@ -38,12 +38,12 @@
 * [soundcloud-lib](https://github.com/thedtvn/soundcloud-lib)
 * [tensorflow-probability](https://www.tensorflow.org/probability)
 * [tensorflow](https://www.tensorflow.org)
-* [pytubefix](https://pytubefix.readthedocs.io/)
 * [streamlit](https://streamlit.io)
 * [essentia](https://essentia.upf.edu)
 * [requests](https://requests.readthedocs.io)
 * [spotipy](https://spotipy.readthedocs.io)
 * [librosa](https://librosa.org)
+* [yt_dlp](https://github.com/yt-dlp/yt-dlp)
 * [gdown](https://github.com/wkentaro/gdown)
 * [numpy](https://numpy.org)
 
