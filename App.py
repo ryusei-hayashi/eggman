@@ -155,7 +155,7 @@ st.image('imgs/logo.png')
 st.markdown('EgGMAn (Engine of Game Music Analogy) search for game music considering game and scene feature')
 
 st.header('Source Music')
-f = st.segmented_control('Form of Source Music', 'Spotify', ['Spotify', 'YouTube', 'Other Site', 'Direct Link', 'Audio File'])
+f = st.segmented_control('Form of Source Music', ['Spotify', 'YouTube', 'Other Site', 'Direct Link', 'Audio File'], default='Spotify')
 y = music(f, st.file_uploader('File of Source Music') if 'File' in f else st.text_input('URL of Source Music'))
 
 c = st.columns(2, gap='large')
