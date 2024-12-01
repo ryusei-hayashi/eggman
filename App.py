@@ -84,7 +84,7 @@ def table(n):
     return t, a, b
 
 @st.cache_data(ttl='9m')
-def music(f, n):
+def music(f, m):
     try:
         if f == 'Spotify':
             open('music.mp3', 'wb').write(get(sp.track(re.sub('intl-.*?/', '', m))['preview_url']).content)
