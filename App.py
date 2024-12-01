@@ -4,7 +4,6 @@ from statistics import mean, median
 from essentia import standard as es
 from spotipy import Spotify, oauth2
 from gdown import download_folder
-from sclib import SoundcloudAPI
 from yt_dlp import YoutubeDL
 from base64 import b64encode
 from tensorflow import keras
@@ -85,19 +84,19 @@ def table(n):
     return t, a, b
 
 @st.cache_data(ttl='9m')
-def music(u):
+def music(f, n):
     try:
-        if 'youtube' in u:
-            yd.download([u])
-        elif 'soundcloud' in u:
-            SoundcloudAPI().resolve(u).write_mp3_to(open('music.mp3', 'wb+'))
-        elif 'spotify' in u:
-            open('music.mp3', 'wb').write(get(sp.track(re.sub('intl-.*?/', '', u))['preview_url']).content)
+        if f == 'Spotify':
+            open('music.mp3', 'wb').write(get(sp.track(re.sub('intl-.*?/', '', m))['preview_url']).content)
+        elif f == 'Direct Link':
+            open('music.mp3', 'wb').write(get(m).content)
+        elif f == 'Audio File':
+            open('music.mp3', 'wb').write(m.getvalue())
         else:
-            open('music.mp3', 'wb').write(get(u).content)
+            yd.download([m])
     except:
-        if u:
-            st.error(f'Error: Unable to access {u}')
+        if m:
+            st.error(f'Unable to access {m}')
         return numpy.empty(0)
     st.markdown(f'<audio src="data:audio/mp3;base64,{b64encode(open("music.mp3", "rb").read()).decode()}" controlslist="nodownload" controls></audio>', True)
     return librosa.load('music.mp3', sr=sr, duration=30)[0]
@@ -120,9 +119,6 @@ def scene(c, s):
             z = st.slider(f'Arousal of {s}', -1.0, 1.0, (-1.0, 1.0))
     return T['scn'].map(lambda i: set(u + t + w + b + p + q + a).issubset(i)) & T['pn'].between(v[0], v[1]) & T['ap'].between(z[0], z[1])
 
-def gauss(l, s):
-    return numpy.random.normal(l, s)
-
 def idx(n, v):
     i = n.searchsorted(v)
     return mean(n[i-1:i+1]) if 0 < i < len(n) else v
@@ -138,13 +134,13 @@ def mold(y, b, p=-1e-99):
     y = numpy.pad(y, ((0, 0), (0, max(0, seq - y.shape[1]))), constant_values=p)
     return y[None, :, :seq, None]
 
-def vec(y, s):
+def vec(y, r):
     t, b = librosa.beat.beat_track(y=y, sr=sr, units='samples')
-    u, v = numpy.split(M.predict(mold(y, b))[0], 2)
-    k, m, f = es.KeyExtractor(sampleRate=sr)(y)
+    m, d = numpy.split(M.predict(mold(y, b))[0], 2)
+    k, s, f = es.KeyExtractor(sampleRate=sr)(y)
     p, c = es.PitchMelodia(sampleRate=sr)(y)
     a = ['C', 'G', 'D', 'A', 'E', 'B', 'F#', 'C#', 'Ab', 'Eb', 'Bb', 'F'].index(k) * math.pi / 6
-    return numpy.r_[es.Loudness()(y), median(p[mean(c) < c]), t, f if 'a' in s else -f, f * math.cos(a), f * math.sin(a), gauss(u, s * tf.math.softplus(v))]
+    return numpy.r_[es.Loudness()(y), median(p[mean(c) < c]), t, f if 'a' in s else -f, f * math.cos(a), f * math.sin(a), numpy.random.normal(m, r * tf.math.softplus(d))]
 
 yd = YoutubeDL({'outtmpl': 'music', 'playlist_items': '1', 'format': 'bestaudio', 'postprocessors': [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3'}], 'overwrites': True})
 sp = Spotify(auth_manager=oauth2.SpotifyClientCredentials(st.secrets['id'], st.secrets['pw']))
@@ -159,27 +155,28 @@ st.image('imgs/logo.png')
 st.markdown('EgGMAn (Engine of Game Music Analogy) search for game music considering game and scene feature')
 
 st.header('Source Music')
-y = music(st.text_input('URL of Source Music', placeholder='Spotify, SoundCloud, YouTube, Hotlink'))
+f = st.segmented_control('Form of Source Music', 'Spotify', ['Spotify', 'YouTube', 'Other Site', 'Direct Link', 'Audio File'])
+y = music(f, st.file_uploader('File of Source Music') if 'File' in f else st.text_input('URL of Source Music'))
 
-l, r = st.columns(2, gap='large')
-p = scene(l, 'Source Scene')
-q = scene(r, 'Target Scene')
+c = st.columns(2, gap='large')
+p = scene(c[0], 'Source Scene')
+q = scene(c[1], 'Target Scene')
 
 st.header('Target Music')
 with st.popover('Search Option'):
     i = st.multiselect('Ignore Artist', ['ANDY', 'BGMer', 'Nash Music Library', 'Seiko', 'TAZ', 'hitoshi', 'zukisuzuki', 'たう', 'ガレトコ', 'ユーフルカ'])
     j = st.multiselect('Ignore Site', ['BGMer', 'BGMusic', 'Nash Music Library', 'PeriTune', 'Senses Circuit', 'zukisuzuki BGM', 'ガレトコ', 'ユーフルカ', '音の園'])
     t = st.slider('Time Range', time(0), time(1), (time(0), time(1)), timedelta(seconds=10), 'mm:ss')
-    s = st.slider('Random Scale', 0.0, 1.0, 1.0)
+    r = st.slider('Random Rate', 0.0, 1.0, 1.0)
 if st.button(f'Search {"EgGMAn" if y.size else "Random"}', type='primary'):
     try:
         if y.size:
-            p, q = T[p & ~q], T[p & ~q]
-            z = a * vec(y, s) - b - p['vec'].mean() + q['vec'].mean()
+            p, q = T[p & ~q], T[q & ~p]
+            z = a * vec(y, r) - b - p['vec'].mean() + q['vec'].mean()
         else:
             q = T[q]
-            z = gauss(q['vec'].mean(), s * numpy.stack(q['vec']).std(0))
-        o = q[~q['Artist'].isin(i) & ~q['Site'].isin(j) & q['Time'].between(t[0], t[1])]
+            z = numpy.random.normal(q['vec'].mean(), r * numpy.stack(q['vec']).std(0))
+        o = q[~q['Artist'].isin(i) & ~q['Site'].isin(j) & q['Time'].between(t[0], t[1])] 
         st.dataframe(o.iloc[((numpy.stack(o['vec']) - z) ** 2).sum(1).argsort()[:99], :5].reset_index(drop=True), column_config={'URL': st.column_config.LinkColumn(), 'Time': st.column_config.TimeColumn(format='mm:ss')})
     except:
         st.error('Too many conditions')
