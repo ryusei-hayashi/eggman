@@ -85,21 +85,21 @@ def table(n):
 
 @st.cache_data(ttl='9m')
 def music(f, m):
-    try:
-        if f == 'Spotify':
-            open('music.mp3', 'wb').write(get(sp.track(re.sub('intl-.*?/', '', m))['preview_url']).content)
-        elif f == 'Direct Link':
-            open('music.mp3', 'wb').write(get(m).content)
-        elif f == 'Audio File':
-            open('music.mp3', 'wb').write(m.getvalue())
-        else:
-            yd.download([m])
-    except:
-        if m:
+    if m:
+        try:
+            if f == 'Spotify':
+                open('music.mp3', 'wb').write(get(sp.track(re.sub('intl-.*?/', '', m))['preview_url']).content)
+            elif f == 'Direct Link':
+                open('music.mp3', 'wb').write(get(m).content)
+            elif f == 'Audio File':
+                open('music.mp3', 'wb').write(m.getvalue())
+            else:
+                yd.download([m])
+            st.markdown(f'<audio src="data:audio/mp3;base64,{b64encode(open("music.mp3", "rb").read()).decode()}" controlslist="nodownload" controls></audio>', True)
+            return librosa.load('music.mp3', sr=sr, duration=30)[0]
+        except:
             st.error(f'Unable to access {m}')
-        return numpy.empty(0)
-    st.markdown(f'<audio src="data:audio/mp3;base64,{b64encode(open("music.mp3", "rb").read()).decode()}" controlslist="nodownload" controls></audio>', True)
-    return librosa.load('music.mp3', sr=sr, duration=30)[0]
+    return numpy.empty(0)
 
 def scene(c, s):
     with c:
