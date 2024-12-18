@@ -2,7 +2,6 @@ from tensorflow_probability import distributions as td, layers as tl
 from datetime import time, timedelta
 from statistics import mean, median
 from essentia import standard as es
-from spotipy import Spotify, oauth2
 from gdown import download_folder
 from yt_dlp import YoutubeDL
 from base64 import b64encode
@@ -84,17 +83,15 @@ def table(n):
     return t, a, b
 
 @st.cache_data(ttl='9m')
-def music(f, m):
+def music(t, m):
     if m:
         try:
-            if f == 'Spotify':
-                open('music.mp3', 'wb').write(get(sp.track(re.sub('intl-.*?/', '', m))['preview_url']).content)
-            elif f == 'Direct Link':
-                open('music.mp3', 'wb').write(get(m).content)
-            elif f == 'Audio File':
-                open('music.mp3', 'wb').write(m.getvalue())
-            else:
+            if t == 'Web Service':
                 yd.download([m])
+            elif t == 'Direct Link':
+                open('music.mp3', 'wb').write(get(m).content)
+            elif t == 'Audio File':
+                open('music.mp3', 'wb').write(m.getvalue())
             st.markdown(f'<audio src="data:audio/mp3;base64,{b64encode(open("music.mp3", "rb").read()).decode()}" controlslist="nodownload" controls></audio>', True)
             return librosa.load('music.mp3', sr=sr, duration=30)[0]
         except:
@@ -143,7 +140,6 @@ def vec(y, r):
     return numpy.r_[es.Loudness()(y), median(p[mean(c) < c]), t, f if 'a' in s else -f, f * math.cos(a), f * math.sin(a), numpy.random.normal(m, r * tf.math.softplus(d))]
 
 yd = YoutubeDL({'outtmpl': 'music', 'playlist_items': '1', 'format': 'bestaudio', 'postprocessors': [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3'}], 'overwrites': True})
-sp = Spotify(auth_manager=oauth2.SpotifyClientCredentials(st.secrets['id'], st.secrets['pw']))
 sr = 22050
 seq = 256
 fps = 25
@@ -155,8 +151,8 @@ st.image('imgs/logo.png')
 st.markdown('EgGMAn (Engine of Game Music Analogy) search for game music considering game and scene feature')
 
 st.header('Source Music')
-f = st.segmented_control('Form of Source Music', ['Spotify', 'YouTube', 'Other Site', 'Direct Link', 'Audio File'], default='Spotify')
-y = music(f, st.file_uploader('File of Source Music') if 'File' in f else st.text_input('URL of Source Music'))
+u = st.segmented_control('Type of Source Music', ['Web Service', 'Direct Link', 'Audio File'], default='Spotify')
+y = music(u, st.file_uploader('File of Source Music') if 'File' in u else st.text_input('URL of Source Music'))
 
 c = st.columns(2, gap='large')
 p = scene(c[0], 'Source Scene')
