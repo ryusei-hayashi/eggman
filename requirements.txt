@@ -3,7 +3,6 @@ tensorflow
 streamlit
 essentia
 requests
-spotipy
 librosa
 yt_dlp
 gdown
