@@ -1,4 +1,3 @@
-tensorflow-probability
 tensorflow
 streamlit
 essentia
@@ -7,4 +6,5 @@ librosa
 yt_dlp
 gdown
 
+tensorflow==2.15.0
 numpy==1.26.4
