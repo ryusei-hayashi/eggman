@@ -1,11 +1,12 @@
-from tensorflow_probability import distributions as td, layers as tl
 from datetime import time, timedelta
-from statistics import mean, median
 from essentia import standard as es
+from statistics import median, mean
 from gdown import download_folder
+from numpy.random import normal
+from tensorflow import keras
 from yt_dlp import YoutubeDL
 from base64 import b64encode
-from tensorflow import keras
+from os.path import exists
 from requests import get
 from pickle import load
 import tensorflow as tf
@@ -13,14 +14,12 @@ import streamlit as st
 import librosa
 import numpy
 import math
-import re
-import os
 
 st.set_page_config('EgGMAn', ':musical_note:', 'wide')
 st.sidebar.link_button('Contact Us', 'https://forms.gle/A4vWuEAp4pPEY4sf9', use_container_width=True)
 
-if not os.path.exists('data'):
-    download_folder('https://drive.google.com/drive/folders/1AWUnFrzD8N-2bRyfm8m1oQNleQG_lKVZ')
+if not exists('data'):
+    download_folder('https://drive.google.com/drive/folders/1vjKbuINZh1a03lFPYWQdyMtYrQrJcFLS')
 
 class Conv1(keras.Model):
     def __init__(self, channel, kernel, stride, padding):
@@ -51,14 +50,14 @@ class Conv5(keras.Model):
         return self.cv3(x), self.cv2(tf.nn.relu(self.cv1(x) + y))
 
 class Encoder(keras.Model):
-    def __init__(self, c_m, c_n):
+    def __init__(self, x_n, y_n, z_n):
         super(Encoder, self).__init__()
-        self.cv1 = keras.layers.Conv2D(c_n, (1, 1), activation='relu')
-        self.cv2 = keras.layers.Conv2D(c_m, (bin, 1), activation='relu')
-        self.cv3 = Conv5((c_m, c_n), (bin, 8), (1, 4), ('valid', 'same'))
-        self.cv4 = Conv5((c_m, c_n), (bin, 8), (1, 4), ('valid', 'same'))
-        self.fc1 = keras.layers.Dense(c_m)
-        self.fc2 = keras.layers.Dense(c_m)
+        self.cv1 = keras.layers.Conv2D(x_n, (1, 1), activation='relu')
+        self.cv2 = keras.layers.Conv2D(y_n, (bin, 1), activation='relu')
+        self.cv3 = Conv5((y_n, x_n), (bin, 8), (1, 4), ('valid', 'same'))
+        self.cv4 = Conv5((y_n, x_n), (bin, 8), (1, 4), ('valid', 'same'))
+        self.fc1 = keras.layers.Dense(z_n)
+        self.fc2 = keras.layers.Dense(z_n)
 
     def call(self, x):
         x, y = self.cv3(self.cv1(x))
@@ -70,8 +69,8 @@ class Encoder(keras.Model):
 
 @st.cache_resource(max_entries=1)
 def model(n):
-    m = Encoder(512, 32)
-    m(tf.zeros((1, bin, seq, 1)))
+    m = Encoder(32, 256, 128)
+    m(tf.zeros((1, bin, seq, 1)), training=False)
     m.set_weights(load(open(n, 'rb')))
     return m
 
@@ -85,29 +84,29 @@ def table(n):
 @st.cache_data(ttl='9m')
 def music(t, m):
     if m:
-        try:
-            if t == 'Web Service':
-                yd.download([m])
-            elif t == 'Direct Link':
-                open('music.mp3', 'wb').write(get(m).content)
-            elif t == 'Audio File':
-                open('music.mp3', 'wb').write(m.getvalue())
-            st.markdown(f'<audio src="data:audio/mp3;base64,{b64encode(open("music.mp3", "rb").read()).decode()}" controlslist="nodownload" controls></audio>', True)
-            return librosa.load('music.mp3', sr=sr, duration=30)[0]
-        except:
-            st.error(f'Unable to access {m}')
+        #try:
+        if t == 'Web Service':
+            yd.download([m])
+        elif t == 'Direct Link':
+            open('music.mp3', 'wb').write(get(m).content)
+        elif t == 'Audio File':
+            open('music.mp3', 'wb').write(m.getvalue())
+        st.markdown(f'<audio src="data:audio/mp3;base64,{b64encode(open("music.mp3", "rb").read()).decode()}" controlslist="nodownload" controls></audio>', True)
+        return librosa.load('music.mp3', sr=sr, duration=30)[0]
+        #except:
+            #st.error(f'Unable to access {m}')
     return numpy.empty(0)
 
 def scene(c, s):
     with c:
         st.header(s)
-        u = st.multiselect(f'State of {s}', ['オープニング', 'エンディング', 'タイトル', 'イベント', 'チュートリアル', 'ゲーム失敗', 'ゲーム成功', 'ハイライト', 'ワールドマップ', 'フィールド', 'ダンジョン', 'ステージ', 'ショップ', 'メニュー', '選択画面', '休憩ポイント'], placeholder='Opening, Dungeon, etc')
-        t = st.multiselect(f'Time of {s}', ['春', '夏', '秋', '冬', '朝', '昼', '夜', '明方', '夕方', '休日', '原始', '古代', '中世', '近代', '現代', '未来'], placeholder='Spring, Morning, etc')
-        w = st.multiselect(f'Weather of {s}', ['虹', '星', '晴れ', '曇り', '霧', '砂', '雪', '雷', '雨', '小雨', '大雨', '突風', '混沌', 'オーロラ'], placeholder='Sunny, Cloudy, etc')
-        b = st.multiselect(f'Biome of {s}', ['異次元', '虚無', '宇宙', '大陸', '海', '空', '東', '西', '南', '北', '氷', '炎', '花', '毒', '沼', '湖', '泉', '滝', '川', '島', '岩', '崖', '山岳', '峡谷', '洞窟', '温泉', '水中', '水辺', '岸辺', '浜辺', '砂漠', '荒野', '草原', '森林', 'サバンナ', 'ジャングル'], placeholder='Sea, Sky, etc')
-        p = st.multiselect(f'Place of {s}', ['アジト', 'オフィス', 'カジノ', 'カフェ', 'キャバクラ', 'ジム', 'タワー', 'ナイトクラブ', 'ビル', 'プール', 'リゾート', 'レストラン', 'ロビー', '遺跡', '飲み屋', '駅', '仮想現実', '家', '外国', '街', '学校', '宮殿', '競技場', '教会', '橋', '軍事基地', '劇場', '研究機関', '公園', '工場', '港', '行政機関', '裁判所', '寺', '式場', '宿泊施設', '城塞', '神社', '神殿', '船', '村', '地下道', '庭', '邸宅', '鉄道', '店', '田舎', '都会', '動物園', '道路', '廃屋', '博物館', '畑', '飛行機', '病院', '墓', '牧場', '遊園地', '路地裏', '牢獄'], placeholder='Office, Casino, etc')
-        q = st.multiselect(f'Person of {s}', ['ゆるキャラ', 'ヒーロー', 'ヒロイン', 'スパイ', 'ライバル', 'ラスボス', 'ボス', 'モブ', '大衆', '貴族', '偉人', '仲間', '孤独', '平穏', '不穏', '敵'], placeholder='Hero, Rival, etc')
-        a = st.multiselect(f'Action of {s}', ['戦う', '泳ぐ', '走る', '飛ぶ', '会話', '回想', '休憩', '出会う', '別れる', '勝利', '敗北', '探検', '特訓', '謎解き', '買い物', '恋愛'], placeholder='Battle, Run, etc')
+        u = st.multiselect(f'State of {s}', ('オープニング', 'エンディング', 'タイトル', 'イベント', 'チュートリアル', 'メニュー画面', 'ショップ画面', 'マップ画面', 'ゲーム失敗', 'ゲーム成功', 'ハイライト', 'アナウンス', 'マイルーム', 'フィールド', 'ダンジョン', 'ステージ'), placeholder='オープニング/ダンジョン/...')
+        t = st.multiselect(f'Time of {s}', ('春', '夏', '秋', '冬', '朝', '昼', '夜', '明方', '夕方', '休日', '原始', '古代', '中世', '近代', '現代', '未来'), placeholder='春/朝/...')
+        w = st.multiselect(f'Weather of {s}', ('星', '虹', '晴れ', '曇り', '霧', '砂', '雪', '雷', '雨', '小雨', '大雨', '突風', '混沌', '朝焼け', '夕焼け', 'オーロラ'), placeholder='晴れ/曇り/...')
+        b = st.multiselect(f'Biome of {s}', ('異次元', '虚無', '宇宙', '大陸', '海', '空', '東', '西', '南', '北', '氷', '炎', '花', '毒', '沼', '湖', '泉', '滝', '川', '島', '岩', '崖', '山岳', '峡谷', '洞窟', '温泉', '水中', '水辺', '岸辺', '浜辺', '砂漠', '荒野', '草原', '森林', 'サバンナ', 'ジャングル'), placeholder='草原/砂漠/...')
+        p = st.multiselect(f'Place of {s}', ('仮想空間', '都会', '田舎', '街', '村', '橋', '道路', '路地裏', '地下道', '航空機', '鉄道', '船', '港', '駅', '店', '墓', '寺', '神社', '教会', '公園', '学校', '法廷', '病院', '劇場', '式場', '競技場', '博物館', '動物園', '遊園地', '飲み屋', '宿泊施設', '研究機関', '軍事基地', '城塞', '牢獄', '倉庫', '工場', '牧場', '畑', '庭', '家', '邸宅', '廃屋', '遺跡', '宮殿', '神殿', 'ロビー', 'タワー', 'ビル', 'ジム', 'プール', 'エステ', 'カフェ', 'レストラン', 'リゾート', 'オフィス', 'アジト', 'カジノ', 'キャバクラ', 'ナイトクラブ'), placeholder='街/店/...')
+        q = st.multiselect(f'Person of {s}', ('ゆるキャラ', 'ヒーロー', 'ヒロイン', 'スパイ', 'ライバル', 'ラスボス', 'ボス', 'モブ', '大衆', '貴族', '偉人', '仲間', '孤独', '平穏', '不穏', '敵'), placeholder='ヒロイン/ラスボス/...')
+        a = st.multiselect(f'Action of {s}', ('ギャグ', 'ギャンブル', 'スポーツ', 'パーティー', 'レース', '悪事', '泳ぐ', '会話', '回想', '葛藤', '感動', '危機', '祈り', '儀式', '議論', '休憩', '結婚', '公演', '好機', '錯乱', '仕事', '支度', '失意', '集まる', '祝福', '出会う', '出掛ける', '勝利', '食事', '声援', '説明', '戦い', '潜入', '走る', '騒動', '探検', '仲違い', '仲直り', '挑戦', '挑発', '追跡', '登場', '逃走', '謎解き', '破滅', '敗北', '買い物', '犯罪', '飛行', '不倫', '復讐', '奮起', '別れ', '謀略', '癒し', '誘惑', '遊ぶ', '恋愛', '練習', '騙す'), placeholder='...')
         st.subheader(f'Mood of {s}')
         l, r = st.columns(2, gap='medium')
         with l:
@@ -131,13 +130,16 @@ def mold(y, b, p=-1e-99):
     y = numpy.pad(y, ((0, 0), (0, max(0, seq - y.shape[1]))), constant_values=p)
     return y[None, :, :seq, None]
 
+def core(z):
+    return numpy.median(numpy.stack(z), 0)
+
 def vec(y, r):
     t, b = librosa.beat.beat_track(y=y, sr=sr, units='samples')
-    m, d = numpy.split(M.predict(mold(y, b))[0], 2)
+    m, v = numpy.split(M.predict(mold(y, b))[0], 2)
     k, s, f = es.KeyExtractor(sampleRate=sr)(y)
     p, c = es.PitchMelodia(sampleRate=sr)(y)
     a = ['C', 'G', 'D', 'A', 'E', 'B', 'F#', 'C#', 'Ab', 'Eb', 'Bb', 'F'].index(k) * math.pi / 6
-    return numpy.r_[es.Loudness()(y), median(p[mean(c) < c]), t, f if 'a' in s else -f, f * math.cos(a), f * math.sin(a), numpy.random.normal(m, r * tf.math.softplus(d))]
+    return numpy.r_[es.Loudness()(y), median(p[mean(c) < c]), t, f if 'a' in s else -f, f * math.cos(a), f * math.sin(a), normal(m, r * tf.math.softplus(v))]
 
 yd = YoutubeDL({'outtmpl': 'music', 'playlist_items': '1', 'format': 'bestaudio', 'postprocessors': [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3'}], 'overwrites': True})
 sr = 22050
@@ -148,11 +150,11 @@ M = model('data/model.pkl')
 T, a, b = table('data/table.pkl')
 
 st.image('imgs/logo.png')
-st.markdown('EgGMAn (Engine of Game Music Analogy) search for game music considering game and scene feature')
+st.markdown('EgGMAn (Engine of Game Music Analogy) search for game music considering game and scene feature at the same time')
 
 st.header('Source Music')
-u = st.segmented_control('Type of Source Music', ['Web Service', 'Direct Link', 'Audio File'], default='Web Service')
-y = music(u, st.file_uploader('File of Source Music') if 'File' in u else st.text_input('URL of Source Music'))
+s = st.segmented_control('Type of Source Music', ('Web Service', 'Direct Link', 'Audio File'), default='Web Service')
+y = music(s, st.file_uploader('File of Source Music') if 'File' in s else st.text_input('URL of Source Music'))
 
 c = st.columns(2, gap='large')
 p = scene(c[0], 'Source Scene')
@@ -160,19 +162,19 @@ q = scene(c[1], 'Target Scene')
 
 st.header('Target Music')
 with st.popover('Search Option'):
-    i = st.multiselect('Ignore Artist', ['ANDY', 'BGMer', 'Nash Music Library', 'Seiko', 'TAZ', 'hitoshi', 'zukisuzuki', 'たう', 'ガレトコ', 'ユーフルカ'])
-    j = st.multiselect('Ignore Site', ['BGMer', 'BGMusic', 'Nash Music Library', 'PeriTune', 'Senses Circuit', 'zukisuzuki BGM', 'ガレトコ', 'ユーフルカ', '音の園'])
+    i = st.multiselect('Ignore Artist', ('ANDY', 'BGMer', 'Nash Music Library', 'Seiko', 'TAZ', 'hitoshi', 'zukisuzuki', 'たう', 'ガレトコ', 'ユーフルカ'), placeholder='')
+    j = st.multiselect('Ignore Site', ('BGMer', 'BGMusic', 'Nash Music Library', 'PeriTune', 'Senses Circuit', 'zukisuzuki BGM', 'ガレトコ', 'ユーフルカ', '音の園'), placeholder='')
     t = st.slider('Time Range', time(0), time(1), (time(0), time(1)), timedelta(seconds=10), 'mm:ss')
     r = st.slider('Random Rate', 0.0, 1.0, 1.0)
 if st.button(f'Search {"EgGMAn" if y.size else "Random"}', type='primary'):
     try:
         if y.size:
             p, q = T[p & ~q], T[q & ~p]
-            z = a * vec(y, r) - b - p['vec'].mean() + q['vec'].mean()
+            z = a * vec(y, r) - b - core(p['vec']) + core(q['vec'])
         else:
             q = T[q]
-            z = numpy.random.normal(q['vec'].mean(), r * numpy.stack(q['vec']).std(0))
+            z = normal(q['vec'].mean(), r * numpy.stack(q['vec']).std(0))
         o = q[~q['Artist'].isin(i) & ~q['Site'].isin(j) & q['Time'].between(t[0], t[1])] 
         st.dataframe(o.iloc[((numpy.stack(o['vec']) - z) ** 2).sum(1).argsort()[:99], :5].reset_index(drop=True), column_config={'URL': st.column_config.LinkColumn(), 'Time': st.column_config.TimeColumn(format='mm:ss')})
     except:
-        st.error('Too many conditions')
+        st.error('No music matches the conditions')
