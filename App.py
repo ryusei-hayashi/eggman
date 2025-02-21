@@ -144,7 +144,8 @@ def mold(y, b, p=-1e-99):
     return y[None, :, :seq, None]
 
 def core(p, q):
-    x = query(f'({p})')
+    print(p)
+    x = query(p)
     print(len(x))
     return numpy.median(numpy.stack(x['vec']), 0)
 
@@ -174,8 +175,6 @@ y = music(st.file_uploader('File of Source Music') if 'File' in m else st.text_i
 c = st.columns(2, gap='large')
 p = scn(c[0], 'Source Scene')
 q = scn(c[1], 'Target Scene')
-print(p)
-print(q)
 
 st.header('Target Music')
 r, s = opt(st.popover('Search Option'))
