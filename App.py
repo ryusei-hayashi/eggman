@@ -144,9 +144,7 @@ def mold(y, b, p=-1e-99):
     return y[None, :, :seq, None]
 
 def core(p, q):
-    print('!')
-    x = numpy.median(numpy.stack(query(f'({p}) and not ({q})')['vec']), 0)
-    return x
+    return numpy.median(numpy.stack(query(f'({p}) and not ({q})')['vec']), 0)
 
 def vec(y, r):
     t, b = librosa.beat.beat_track(y=y, sr=sr, units='samples')
@@ -178,13 +176,13 @@ q = scn(c[1], 'Target Scene')
 st.header('Target Music')
 r, s = opt(st.popover('Search Option'))
 if st.button(f'Search {"EgGMAn" if y.size else "Random"}', type='primary'):
-    try:
-        if y.size:
-            z = a * vec(y, s) - b - core(p, q) + core(q, p)
-            t = query(f'not ({p}) and ({q}) and ({r})')
-        else:
-            z = normal(query(q)['vec'].mean(), s * numpy.stack(query(q)['vec']).std(0)) 
-            t = query(f'({q}) and ({r})')
-        st.dataframe(t.iloc[norm(numpy.stack(t['vec']) - z, axis=1).argsort()[:99], :5].reset_index(drop=True), column_config={'URL': st.column_config.LinkColumn()})
-    except:
-        st.error('No music matches the conditions')
+    #try:
+    if y.size:
+        z = a * vec(y, s) - b - core(p, q) + core(q, p)
+        t = query(f'not ({p}) and ({q}) and ({r})')
+    else:
+        z = normal(query(q)['vec'].mean(), s * numpy.stack(query(q)['vec']).std(0)) 
+        t = query(f'({q}) and ({r})')
+    st.dataframe(t.iloc[norm(numpy.stack(t['vec']) - z, axis=1).argsort()[:99], :5].reset_index(drop=True), column_config={'URL': st.column_config.LinkColumn()})
+    #except:
+        #st.error('No music matches the conditions')
