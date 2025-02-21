@@ -144,7 +144,9 @@ def mold(y, b, p=-1e-99):
     return y[None, :, :seq, None]
 
 def core(p, q):
-    return numpy.median(numpy.stack(query(f'({p}) and not ({q})')['vec']), 0)
+    x = query(f'({p}) and not ({q})')
+    print(len(x)
+    return numpy.median(numpy.stack(query(x['vec']), 0)
 
 def vec(y, r):
     t, b = librosa.beat.beat_track(y=y, sr=sr, units='samples')
