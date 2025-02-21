@@ -3,6 +3,7 @@ from essentia import standard as es
 from statistics import median, mean
 from gdown import download_folder
 from numpy.random import normal
+from numpy.linalg import norm
 from tensorflow import keras
 from yt_dlp import YoutubeDL
 from base64 import b64encode
@@ -81,23 +82,27 @@ def table(n):
     b = a * numpy.stack(t['vec']).min(0) + 100
     return t, a, b
 
-@st.cache_data(ttl='9m')
-def music(t, m):
+@st.cache_data(max_entries=1)
+def music(m, n):
     if m:
-        #try:
-        if t == 'Web Service':
-            yd.download([m])
-        elif t == 'Direct Link':
-            open('music.mp3', 'wb').write(get(m).content)
-        elif t == 'Audio File':
-            open('music.mp3', 'wb').write(m.getvalue())
-        st.markdown(f'<audio src="data:audio/mp3;base64,{b64encode(open("music.mp3", "rb").read()).decode()}" controlslist="nodownload" controls></audio>', True)
-        return librosa.load('music.mp3', sr=sr, duration=30)[0]
-        #except:
-            #st.error(f'Unable to access {m}')
+        try:
+            if n == 'Web Service':
+                yd.download([m])
+            elif n == 'Direct Link':
+                open('music.mp3', 'wb').write(get(m).content)
+            elif n == 'Audio File':
+                open('music.mp3', 'wb').write(m.getvalue())
+            st.markdown(f'<audio src="data:audio/mp3;base64,{b64encode(open("music.mp3", "rb").read()).decode()}" controlslist="nodownload" controls></audio>', True)
+            return librosa.load('music.mp3', sr=sr, duration=30)[0]
+        except:
+            st.error(f'Unable to access {m}')
     return numpy.empty(0)
 
-def scene(c, s):
+@st.cache_data(max_entries=3)
+def query(q):
+    return T.query(q)
+
+def scn(c, s):
     with c:
         st.header(s)
         u = st.multiselect(f'State of {s}', ('オープニング', 'エンディング', 'タイトル', 'イベント', 'チュートリアル', 'メニュー画面', 'ショップ画面', 'マップ画面', 'ゲーム失敗', 'ゲーム成功', 'ハイライト', 'アナウンス', 'マイルーム', 'フィールド', 'ダンジョン', 'ステージ'), placeholder='オープニング/ダンジョン/...')
@@ -113,7 +118,15 @@ def scene(c, s):
             v = st.slider(f'Valence of {s}', -1.0, 1.0, (-1.0, 1.0))
         with r:
             z = st.slider(f'Arousal of {s}', -1.0, 1.0, (-1.0, 1.0))
-    return T['scn'].map(lambda i: set(u + t + w + b + p + q + a).issubset(i)) & T['pn'].between(v[0], v[1]) & T['ap'].between(z[0], z[1])
+    return ''.join(f"scn.str.contains('{i}') and " for i in u + t + w + b + p + q + a) + f"{v[0]} <= pn <= {v[1]} and {a[0]} <= ap <= {a[1]}"
+
+def opt(c):
+    with c:
+        a = st.multiselect('Ignore Artist', ('ANDY', 'BGMer', 'Nash Music Library', 'Seiko', 'TAZ', 'hitoshi', 'zukisuzuki', 'たう', 'ガレトコ', 'ユーフルカ'), placeholder='')
+        s = st.multiselect('Ignore Site', ('BGMer', 'BGMusic', 'Nash Music Library', 'PeriTune', 'Senses Circuit', 'zukisuzuki BGM', 'ガレトコ', 'ユーフルカ', '音の園'), placeholder='')
+        t = st.slider('Time Range', time(0), time(0, 59), (time(0), time(0, 59)), timedelta(seconds=10), 'mm:ss')
+        r = st.slider('Random Scale', 0.0, 1.0, 1.0)
+    return f"not Artist in {str(a)} and not Site in {str(s)} and '{t[0].strftime('%M:%S')}' <= Time <= '{t[1].strftime('%M:%S')}'", r
 
 def idx(n, v):
     i = n.searchsorted(v)
@@ -130,8 +143,8 @@ def mold(y, b, p=-1e-99):
     y = numpy.pad(y, ((0, 0), (0, max(0, seq - y.shape[1]))), constant_values=p)
     return y[None, :, :seq, None]
 
-def core(z):
-    return numpy.median(numpy.stack(z), 0)
+def core(p, q):
+    return numpy.median(numpy.stack(query(f'({p}) and not ({q})')['vec']), 0)
 
 def vec(y, r):
     t, b = librosa.beat.beat_track(y=y, sr=sr, units='samples')
@@ -141,7 +154,7 @@ def vec(y, r):
     a = ['C', 'G', 'D', 'A', 'E', 'B', 'F#', 'C#', 'Ab', 'Eb', 'Bb', 'F'].index(k) * math.pi / 6
     return numpy.r_[es.Loudness()(y), median(p[mean(c) < c]), t, f if 'a' in s else -f, f * math.cos(a), f * math.sin(a), normal(m, r * tf.math.softplus(v))]
 
-yd = YoutubeDL({'outtmpl': 'music', 'playlist_items': '1', 'format': 'bestaudio', 'postprocessors': [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3'}], 'overwrites': True})
+yd = YoutubeDL({'outtmpl': 'music', 'playlist_items': '1', 'format': 'bestaudio', 'postprocessors': [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3'}], 'postprocessor_args': ['-ss', '0', '-t', '30'], 'overwrites': True})
 sr = 22050
 seq = 256
 fps = 25
@@ -150,31 +163,26 @@ M = model('data/model.pkl')
 T, a, b = table('data/table.pkl')
 
 st.image('imgs/logo.png')
-st.markdown('EgGMAn (Engine of Game Music Analogy) search for game music considering game and scene feature at the same time')
+st.markdown('EgGMAn (Engine of Game Music Analogy) searches for game music considering game and scene features')
 
 st.header('Source Music')
-s = st.segmented_control('Type of Source Music', ('Web Service', 'Direct Link', 'Audio File'), default='Web Service')
-y = music(s, st.file_uploader('File of Source Music') if 'File' in s else st.text_input('URL of Source Music'))
+m = st.segmented_control('Mode of Source Music', ('Web Service', 'Direct Link', 'Audio File'), default='Web Service')
+y = music(st.file_uploader('File of Source Music') if 'File' in m else st.text_input('URL of Source Music'), m)
 
 c = st.columns(2, gap='large')
-p = scene(c[0], 'Source Scene')
-q = scene(c[1], 'Target Scene')
+p = scn(c[0], 'Source Scene')
+q = scn(c[1], 'Target Scene')
 
 st.header('Target Music')
-with st.popover('Search Option'):
-    i = st.multiselect('Ignore Artist', ('ANDY', 'BGMer', 'Nash Music Library', 'Seiko', 'TAZ', 'hitoshi', 'zukisuzuki', 'たう', 'ガレトコ', 'ユーフルカ'), placeholder='')
-    j = st.multiselect('Ignore Site', ('BGMer', 'BGMusic', 'Nash Music Library', 'PeriTune', 'Senses Circuit', 'zukisuzuki BGM', 'ガレトコ', 'ユーフルカ', '音の園'), placeholder='')
-    t = st.slider('Time Range', time(0), time(1), (time(0), time(1)), timedelta(seconds=10), 'mm:ss')
-    r = st.slider('Random Rate', 0.0, 1.0, 1.0)
+r, s = opt(st.popover('Search Option'))
 if st.button(f'Search {"EgGMAn" if y.size else "Random"}', type='primary'):
     try:
         if y.size:
-            p, q = T[p & ~q], T[q & ~p]
-            z = a * vec(y, r) - b - core(p['vec']) + core(q['vec'])
+            z = a * vec(y, s) - b - core(p, q) + core(q, p)
+            t = query(f'not ({p}) and ({q}) and ({r})')
         else:
-            q = T[q]
-            z = normal(q['vec'].mean(), r * numpy.stack(q['vec']).std(0))
-        o = q[~q['Artist'].isin(i) & ~q['Site'].isin(j) & q['Time'].between(t[0], t[1])] 
-        st.dataframe(o.iloc[((numpy.stack(o['vec']) - z) ** 2).sum(1).argsort()[:99], :5].reset_index(drop=True), column_config={'URL': st.column_config.LinkColumn(), 'Time': st.column_config.TimeColumn(format='mm:ss')})
+            z = normal(query(q)['vec'].mean(), s * numpy.stack(query(q)['vec']).std(0)) 
+            t = query(f'({q}) and ({r})')
+        st.dataframe(t.iloc[norm(numpy.stack(t['vec']) - z, axis=1).argsort()[:99], :5].reset_index(drop=True), column_config={'URL': st.column_config.LinkColumn()})
     except:
         st.error('No music matches the conditions')
