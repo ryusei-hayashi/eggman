@@ -118,7 +118,10 @@ def scn(c, s):
             v = st.slider(f'Valence of {s}', -1.0, 1.0, (-1.0, 1.0))
         with r:
             z = st.slider(f'Arousal of {s}', -1.0, 1.0, (-1.0, 1.0))
-        st.write(z)
+        st.write(v[0])
+        st.write(v[1])
+        st.write(z[0])
+        st.write(z[1])
     #return ''.join(f"scn.str.contains('{i}') and " for i in u + t + w + b + p + q + a) + f"{v[0]} <= pn <= {v[1]} and {z[0]} <= ap <= {z[1]}"
     return ''.join(f"scn.str.contains('{i}') and " for i in u + t + w + b + p + q + a)
 
