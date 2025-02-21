@@ -144,8 +144,8 @@ def mold(y, b, p=-1e-99):
     return y[None, :, :seq, None]
 
 def core(p, q):
+    print('!')
     x = numpy.median(numpy.stack(query(f'({p}) and not ({q})')['vec']), 0)
-    print(x.shape)
     return x
 
 def vec(y, r):
