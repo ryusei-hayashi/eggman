@@ -174,8 +174,8 @@ y = music(st.file_uploader('File of Source Music') if 'File' in m else st.text_i
 c = st.columns(2, gap='large')
 p = scn(c[0], 'Source Scene')
 q = scn(c[1], 'Target Scene')
-st.write(p)
-st.write(q)
+print(p)
+print(q)
 
 st.header('Target Music')
 r, s = opt(st.popover('Search Option'))
