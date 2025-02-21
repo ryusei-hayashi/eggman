@@ -122,8 +122,7 @@ def scn(c, s):
         st.write(v[1])
         st.write(z[0])
         st.write(z[1])
-    #return ''.join(f"scn.str.contains('{i}') and " for i in u + t + w + b + p + q + a) + f"{v[0]} <= pn <= {v[1]} and {z[0]} <= ap <= {z[1]}"
-    return ''.join(f"scn.str.contains('{i}') and " for i in u + t + w + b + p + q + a)
+    return ''.join(f"scn.str.contains('{i}') and " for i in u + t + w + b + p + q + a) + f"{v[0]} <= pn <= {v[1]} and {z[0]} <= ap <= {z[1]}"
 
 def opt(c):
     with c:
