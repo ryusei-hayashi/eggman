@@ -18,7 +18,7 @@ st.title('Usage')
 iframe('https://drive.google.com/file/d/1X0O0hd9EHayuhPaUyPzXYJZljInnRtgO', 700, 420)
 
 st.header('Source Music')
-st.markdown('- Enter the music prepared for the developing game\n  - Web Service\t: Enter the URL of [these sites](https://github.com/yt-dlp/yt-dlp/blob/master/supportedsites.md)\n  - Direck Link\t: Enter the URL of the audio file\n  - Audio file\t: Enter the uploaded audio file')
+st.markdown('- Enter the music prepared for the developing game\n  - Web Service: Enter the URL of [these sites](https://github.com/yt-dlp/yt-dlp/blob/master/supportedsites.md)\n  - Direck Link: Enter the URL of the audio file\n  - Audio file: Enter the uploaded audio file')
 
 c = st.columns(2, gap='large')
 scene(c[0], 'Source Scene', 'prepared music')
