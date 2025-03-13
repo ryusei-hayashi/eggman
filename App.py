@@ -163,7 +163,7 @@ M = model('data/model.pkl')
 T, a, b = table('data/table.pkl')
 
 st.image('imgs/logo.png')
-st.markdown('EgGMAn (Engine of Game Music Analogy) searches for game music considering game and scene features')
+st.markdown('- EgGMAn (Engine of Game Music Analogy) searches for game music considering game-wide consistency and scene-wide individuality')
 
 st.header('Source Music')
 m = st.segmented_control('Mode of Source Music', ('Web Service', 'Direct Link', 'Audio File'), default='Web Service')
@@ -178,11 +178,11 @@ r, s = opt(st.popover('Search Option'))
 if st.button(f'Search {"EgGMAn" if y.size else "Random"}', type='primary'):
     try:
         if y.size:
-            z = a * vec(y, s) - b - core(p, q) + core(q, p)
             t = query(f'not ({p}) and ({q}) and ({r})')
+            z = a * vec(y, s) - b - core(p, q) + core(q, p)
         else:
-            z = normal(query(q)['vec'].mean(), s * numpy.stack(query(q)['vec']).std(0)) 
             t = query(f'({q}) and ({r})')
+            z = normal(t['vec'].mean(), s * numpy.stack(t['vec']).std(0)) 
         st.dataframe(t.iloc[norm(numpy.stack(t['vec']) - z, axis=1).argsort()[:99], :5].reset_index(drop=True), column_config={'URL': st.column_config.LinkColumn()})
     except:
         st.error('No music matches the conditions')
