@@ -9,7 +9,7 @@ def iframe(u, w, h):
 def scene(c, s, m):
     with c:
         st.header(s)
-        st.markdown(f'- Enter the scene that uses the {m} combining tags\n- There are about 200 tags such as _Opening_ / _Dungeon_ / ...')
+        st.markdown(f'- Enter the scene that uses the {m} combining tags\n- There are about 200 tags such as _Opening_, _Dungeon_, ...')
         st.subheader(f'Mood of {s}')
         st.markdown('- Enter the mood of the scene with Valence-Arousal\n  - Valence: Rises in positive scenes and falls in negative scenes\n  - Arousal: Rises in active scenes and falls in passive scenes')
 
