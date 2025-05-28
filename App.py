@@ -163,7 +163,7 @@ M = model('data/model.pkl')
 T, a, b = table('data/table.pkl')
 
 st.image('imgs/logo.png')
-st.markdown('EgGMAn (Engine of Game Music Analogy) searches for game music considering game-wise consistency and scene-wise individuality')
+st.markdown('<center>EgGMAn (Engine of Game Music Analogy) searches for game music considering game-wise consistency and scene-wise individuality</center>', True)
 
 st.header('Source Music')
 m = st.segmented_control('Mode of Source Music', ('Web Service', 'Direct Link', 'Audio File'), default='Web Service')
