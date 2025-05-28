@@ -120,7 +120,7 @@ def scn(c, s):
             z = st.slider(f'Arousal of {s}', -1.0, 1.0, (-1.0, 1.0))
     return ''.join(f"scn.str.contains('{i}') and " for i in u + t + w + b + p + q + a) + f"{v[0]} <= pn <= {v[1]} and {z[0]} <= ap <= {z[1]}"
 
-def opt(c):
+def set(c):
     with c:
         a = st.multiselect('Ignore Artist', ('ANDY', 'BGMer', 'Nash Music Library', 'Seiko', 'TAZ', 'hitoshi', 'zukisuzuki', 'たう', 'ガレトコ', 'ユーフルカ'), placeholder='')
         s = st.multiselect('Ignore Site', ('BGMer', 'BGMusic', 'Nash Music Library', 'PeriTune', 'Senses Circuit', 'zukisuzuki BGM', 'ガレトコ', 'ユーフルカ', '音の園'), placeholder='')
@@ -174,15 +174,15 @@ p = scn(c[0], 'Source Scene')
 q = scn(c[1], 'Target Scene')
 
 st.header('Target Music')
-r, s = opt(st.popover('Search Option'))
+o, r = set(st.popover('Search Option'))
 if st.button(f'Search {"EgGMAn" if y.size else "Random"}', type='primary'):
     try:
         if y.size:
-            t = query(f'not ({p}) and ({q}) and ({r})')
-            z = a * vec(y, s) - b - core(p, q) + core(q, p)
+            t = query(f'not ({p}) and ({q}) and ({o})')
+            z = a * vec(y, r) - b - core(p, q) + core(q, p)
         else:
-            t = query(f'({q}) and ({r})')
-            z = normal(t['vec'].mean(), s * numpy.stack(t['vec']).std(0)) 
+            t = query(f'({q}) and ({o})')
+            z = normal(t['vec'].mean(), r * numpy.stack(t['vec']).std(0)) 
         st.dataframe(t.iloc[norm(numpy.stack(t['vec']) - z, axis=1).argsort()[:99], :5].reset_index(drop=True), column_config={'URL': st.column_config.LinkColumn()})
     except:
         st.error('No music matches the conditions')
