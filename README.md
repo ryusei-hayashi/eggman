@@ -37,22 +37,22 @@
 
 ## System
 ### Source Music
-- Convert Source Music to vector __z__
+- Extract vector $z_p$ from Source Music
 
 ### Source Scene
-- Create a set of music to use in the same scene as Source Scene
-- Convert a set of music to a set of vector
-- Compute the center __p__ of a set of vector
+- Create a set of music used in the same scene as Source Scene
+- Extract a set of vectors from the set of music
+- Compute vector $c_p$ of Source Scene from the center of the set of vectors
 
 ### Target Scene
-- Create a set of music to use in the same scene as Target Scene
-- Convert a set of music to a set of vector
-- Compute the center __q__ of a set of vector
+- Create a set of music used in the same scene as Target Scene
+- Extract a set of vectors from the set of music
+- Compute vector $c_q$ of Target Scene from the center of the set of vectors
 
 ### Target Music
-- Compute vector __z'__ by moving vector __z__ toward __q__ - __p__
-- Compute the distance of vector __z'__ and each music vector
-- Show music in order of distance
+- Predict vector $z_q$ of Target Music from $z_p, c_p, c_q$ 
+- Compute the distance from $z_q$ to each music vector
+- Sort music in ascending order by distance
 
 ## Requirement
 * [tensorflow-probability](https://www.tensorflow.org/probability)
