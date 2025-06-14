@@ -1,6 +1,6 @@
 # EgGMAn
 - This repository is for Deploying [EgGMAn](https://eggman.streamlit.app) (Engine of Game Music Analysis)
-- EgGMAn (Engine of Game Music Analysis) search for game music considering game and scene feature at the same time
+- EgGMAn searches for game music considering game-wise consistency and scene-wise individuality
 
 ## Usage
 ### Source Music
