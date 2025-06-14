@@ -24,5 +24,5 @@ with r:
     st.markdown('- Create a set of music used in the same scene as Target Scene\n- Extract a set of vectors from the set of music\n- Compute vector $c_q$ of Target Scene from the center of the set of vectors')
 
 st.subheader('Target Music')
-st.markdown('- Predict vector $z_q$ of Target Music from $z_p, c_p, c_q$\n - Compute the distance from $z_q$ to extracted vectors from each music\n- Sort music in ascending order by distance')
+st.markdown('- Predict vector $z_q$ of Target Music from $z_p, c_p, c_q$\n - Compute the distance from $z_q$ to each music vector\n- Sort music in ascending order by distance')
 st.markdown("- Compute vector ___z'___ by moving vector ___z___ toward ___q___ - ___p___\n- Compute the distance of vector ___z'___ and each music vector\n- Show music in order of distance")
