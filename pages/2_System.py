@@ -25,4 +25,3 @@ with r:
 
 st.subheader('Target Music')
 st.markdown('- Predict vector $z_q$ of Target Music from $z_p, c_p, c_q$\n - Compute the distance from $z_q$ to each music vector\n- Sort music in ascending order by distance')
-st.markdown("- Compute vector ___z'___ by moving vector ___z___ toward ___q___ - ___p___\n- Compute the distance of vector ___z'___ and each music vector\n- Show music in order of distance")
