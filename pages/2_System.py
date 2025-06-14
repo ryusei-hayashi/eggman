@@ -13,7 +13,7 @@ iframe('https://drive.google.com/file/d/1a167-_xiTrvA9JtiEfI8RST_T8996Stu', 700,
 st.subheader('Source Music')
 st.markdown('- Extract vector $z_p$ from Source Music')
 
-l, r = st.columns(2, gap='medium')
+l, r = st.columns(2, gap='small')
 
 with l:
     st.subheader('Source Scene')
