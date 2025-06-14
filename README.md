@@ -4,8 +4,10 @@
 
 ## Usage
 ### Source Music
-- Enter the URL of the music to use in developing game
-- URL support Spotify, SoundCloud, YouTube, Hotlink
+- Enter the music prepared for the developing game
+  - Web Service\t: Enter the URL of these sites
+  - Direck Link\t: Enter the URL of the audio file
+  - Audio file\t: Enter the uploaded audio file
 
 ### Source Scene
 - Enter the scene where Source Music is used
