@@ -1,5 +1,5 @@
 # EgGMAn
-- This repository is for Deploying [EgGMAn](https://eggman.streamlit.app) (Engine of Game Music Analysis)
+- This repository is for Deploying [EgGMAn: Engine of Game Music Analysis](https://eggman.streamlit.app)
 - EgGMAn searches for game music considering game-wise consistency and scene-wise individuality
 
 ## Usage
