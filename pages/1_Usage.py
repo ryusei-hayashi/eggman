@@ -25,4 +25,4 @@ scene(c[0], 'Source Scene', 'prepared music')
 scene(c[1], 'Target Scene', 'searched music')
 
 st.header('Target Music')
-st.markdown('- EgGMAn searches for game music of Target Scene in the developing game\n- Without Source Music, EgGMAn randomly searches for game music of Target Scene\n  - Ignore Artist: Enter the artist not to be listed\n  - Ignore Site: Enter the site not to be listed\n  - Time Range: Enter the time of music to be listed\n  - Random Scale: Enter the ratio to reflect music distribution')
+st.markdown('- EgGMAn searches for game music of Target Scene in the developing game\n- Without Source Music, EgGMAn randomly searches for game music of Target Scene\n  - Ignore Artist: Enter the artist not to be listed\n  - Ignore Site: Enter the site not to be listed\n  - Time Range: Enter the time of music to be listed\n  - Random Rate: Enter the ratio to reflect music distribution')
