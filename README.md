@@ -33,7 +33,7 @@
   - Ignore Artist: Enter the artist not to be listed
   - Ignore Site: Enter the site not to be listed
   - Time Range: Enter the time of music to be listed
-  - Random Scale: Enter the ratio to reflect music distribution
+  - Random Rate: Enter the ratio to reflect music distribution
 
 ## System
 ### Source Music
@@ -55,13 +55,11 @@
 - Show music in order of distance
 
 ## Requirement
-* [soundcloud-lib](https://github.com/thedtvn/soundcloud-lib)
 * [tensorflow-probability](https://www.tensorflow.org/probability)
 * [tensorflow](https://www.tensorflow.org)
 * [streamlit](https://streamlit.io)
 * [essentia](https://essentia.upf.edu)
 * [requests](https://requests.readthedocs.io)
-* [spotipy](https://spotipy.readthedocs.io)
 * [librosa](https://librosa.org)
 * [yt_dlp](https://github.com/yt-dlp/yt-dlp)
 * [gdown](https://github.com/wkentaro/gdown)
