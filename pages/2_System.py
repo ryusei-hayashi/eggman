@@ -11,7 +11,7 @@ st.title('System')
 iframe('https://drive.google.com/file/d/1a167-_xiTrvA9JtiEfI8RST_T8996Stu', 700, 420)
 
 st.subheader('Source Music')
-st.markdown('- Extract vector __$z_p$__ ... $__z_p__$ from Source Music')
+st.markdown('- Extract vector $\bm{z_p}$ from Source Music')
 
 l, r = st.columns(2, gap='small')
 
