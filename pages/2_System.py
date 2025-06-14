@@ -11,13 +11,13 @@ st.title('System')
 iframe('https://drive.google.com/file/d/1a167-_xiTrvA9JtiEfI8RST_T8996Stu', 700, 420)
 
 st.subheader('Source Music')
-st.markdown('- Extract vector $\boldsymbol{z_p}$ ... $\mathbf{z_p}$ ... $\boldmath{z_p}$from Source Music')
+st.markdown('- Extract vector $z_p$ from Source Music')
 
 l, r = st.columns(2, gap='small')
 
 with l:
     st.subheader('Source Scene')
-    st.markdown('- Create a set of music used in the same scene as Source Scene\n- Extract a set of vectors from the set of music\n- Compute vector __c_p__ of Source Scene from the center of the set of vectors')
+    st.markdown('- Create a set of music used in the same scene as Source Scene\n- Extract a set of vectors from the set of music\n- Compute vector $c_p$ of Source Scene from the center of the set of vectors')
 
 with r:
     st.subheader('Target Scene')
