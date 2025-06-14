@@ -160,7 +160,7 @@ seq = 256
 fps = 25
 bin = 1025
 M = model('data/model.pkl')
-T, a, b = table('data/table.pkl')
+T, a, b = table('data/table2.pkl')
 
 st.image('imgs/logo.png')
 st.markdown('<center>EgGMAn (Engine of Game Music Analogy) searches for game music considering game-wise consistency and scene-wise individuality</center>', True)
