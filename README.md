@@ -29,11 +29,11 @@
 
 ### Target Music
 - EgGMAn searches for game music of Target Scene in the developing game
-- Without Source Music, EgGMAn randomly searches for game music of Target Scene
   - Ignore Artist: Enter the artist not to be listed
   - Ignore Site: Enter the site not to be listed
   - Time Range: Enter the time of music to be listed
   - Random Rate: Enter the ratio to reflect music distribution
+- Without Source Music, EgGMAn randomly searches for game music of Target Scene
 
 ## System
 ### Source Music
