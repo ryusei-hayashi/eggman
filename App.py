@@ -16,7 +16,7 @@ import librosa
 import numpy
 import math
 
-st.set_page_config('EgGMAn', ':musical_note:', 'wide')
+st.set_page_config('EgGMAn', ':musical_note:', 'wide', 'expanded')
 st.sidebar.link_button('Contact Us', 'https://forms.gle/A4vWuEAp4pPEY4sf9', use_container_width=True)
 
 if not exists('data'):
