@@ -5,7 +5,7 @@
 ## Usage
 ### Source Music
 - Enter the music prepared for the developing game
-  - Web Service: Enter the URL of these sites
+  - Web Service: Enter the URL of [these sites](https://github.com/yt-dlp/yt-dlp/blob/master/supportedsites.md)
   - Direck Link: Enter the URL of the audio file
   - Audio file: Enter the uploaded audio file
 
