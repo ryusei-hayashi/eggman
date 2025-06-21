@@ -55,15 +55,14 @@
 - Sort music in ascending order by distance
 
 ## Requirement
-* [tensorflow-probability](https://www.tensorflow.org/probability)
-* [tensorflow](https://www.tensorflow.org)
-* [streamlit](https://streamlit.io)
-* [essentia](https://essentia.upf.edu)
-* [requests](https://requests.readthedocs.io)
-* [librosa](https://librosa.org)
-* [yt_dlp](https://github.com/yt-dlp/yt-dlp)
-* [gdown](https://github.com/wkentaro/gdown)
-* [numpy](https://numpy.org)
+- [tensorflow](https://www.tensorflow.org)
+- [streamlit](https://streamlit.io)
+- [essentia](https://essentia.upf.edu)
+- [requests](https://requests.readthedocs.io)
+- [librosa](https://librosa.org)
+- [yt_dlp](https://github.com/yt-dlp/yt-dlp)
+- [gdown](https://github.com/wkentaro/gdown)
+- [numpy](https://numpy.org)
 
 ## Licence
-* [MIT License](https://en.wikipedia.org/wiki/MIT_License)
+- [MIT License](https://en.wikipedia.org/wiki/MIT_License)
