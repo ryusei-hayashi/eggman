@@ -5,5 +5,5 @@ librosa
 yt_dlp
 gdown
 
-tensorflow==2.15.0
-numpy==1.26.4
+tensorflow==2.15
+numpy==1.26
