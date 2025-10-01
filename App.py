@@ -156,7 +156,8 @@ def vec(y, r):
 
 #yd = YoutubeDL({'outtmpl': 'music', 'playlist_items': '1', 'format': 'bestaudio', 'postprocessors': [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3'}], 'postprocessor_args': ['-ss', '0', '-t', '30'], 'overwrites': True})
 #yd = YoutubeDL({'outtmpl': 'music', 'playlist_items': '1', 'overwrites': True, 'format': 'bestaudio', 'postprocessors': [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3'}], 'postprocessor_args': ['-ss', '0', '-t', '30'], 'http_headers': {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}})
-yd = YoutubeDL({'outtmpl': 'music', 'playlist_items': '1', 'overwrites': True, 'format': 'bestaudio', 'postprocessors': [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3'}], 'postprocessor_args': ['-ss', '0', '-t', '30'], 'extractor_args': {'youtube': {'player_client': ['default', '-tv_simply']}}})
+#yd = YoutubeDL({'outtmpl': 'music', 'playlist_items': '1', 'overwrites': True, 'format': 'bestaudio', 'postprocessors': [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3'}], 'postprocessor_args': ['-ss', '0', '-t', '30'], 'extractor_args': {'youtube': {'player_client': ['default', '-tv_simply']}}})
+yd = YoutubeDL({'outtmpl': 'music', 'playlist_items': '1', 'overwrites': True, 'format': 'bestaudio', 'postprocessors': [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3'}], 'postprocessor_args': ['-ss', '0', '-t', '30'], 'extractor_args': {'youtube': {'player_client': ['default', '-tv_simply']}}, 'http_headers': {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}})
 
 sr = 22050
 seq = 256
