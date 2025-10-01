@@ -5,6 +5,7 @@ from gdown import download_folder
 from mimetypes import guess_type
 from numpy.random import normal
 from numpy.linalg import norm
+from pytubefix import YouTube
 from tensorflow import keras
 from yt_dlp import YoutubeDL
 from base64 import b64encode
@@ -88,7 +89,7 @@ def music(m, n):
     if m:
         try:
             if n == 'Web Service':
-                yd.download([m])
+                YouTube(m).streams.get_audio_only().download(filename='music') #YoutubeDL({'outtmpl': 'music', 'playlist_items': '1', 'overwrites': True, 'format': 'bestaudio', 'postprocessors': [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3'}], 'postprocessor_args': ['-ss', '0', '-t', '30']}).download([m])
             elif n == 'Direct Link':
                 open('music', 'wb').write(get(m).content)
             elif n == 'Audio File':
@@ -154,11 +155,6 @@ def vec(y, r):
     p, c = es.PitchMelodia(sampleRate=sr)(y)
     a = ['C', 'G', 'D', 'A', 'E', 'B', 'F#', 'C#', 'Ab', 'Eb', 'Bb', 'F'].index(k) * math.pi / 6
     return numpy.r_[es.Loudness()(y), median(p[mean(c) < c]), t, f if 'a' in s else -f, f * math.cos(a), f * math.sin(a), normal(m, r * tf.math.softplus(v))]
-
-#yd = YoutubeDL({'outtmpl': 'music', 'playlist_items': '1', 'format': 'bestaudio', 'postprocessors': [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3'}], 'postprocessor_args': ['-ss', '0', '-t', '30'], 'overwrites': True})
-#yd = YoutubeDL({'outtmpl': 'music', 'playlist_items': '1', 'overwrites': True, 'format': 'bestaudio', 'postprocessors': [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3'}], 'postprocessor_args': ['-ss', '0', '-t', '30'], 'http_headers': {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}})
-#yd = YoutubeDL({'outtmpl': 'music', 'playlist_items': '1', 'overwrites': True, 'format': 'bestaudio', 'postprocessors': [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3'}], 'postprocessor_args': ['-ss', '0', '-t', '30'], 'extractor_args': {'youtube': {'player_client': ['default', '-tv_simply']}}})
-yd = YoutubeDL({'outtmpl': 'music', 'playlist_items': '1', 'overwrites': True, 'format': 'bestaudio', 'postprocessors': [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3'}], 'postprocessor_args': ['-ss', '0', '-t', '30'], 'extractor_args': {'youtube': {'player_client': ['default', '-tv_simply']}}, 'http_headers': {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}})
 
 sr = 22050
 seq = 256
