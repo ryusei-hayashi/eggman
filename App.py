@@ -94,7 +94,7 @@ def music(m, n):
                 open('music', 'wb').write(get(m).content)
             elif n == 'Audio File':
                 open('music', 'wb').write(m.getvalue())
-            print(guess_type("music"))
+            st.write(f'guess: {guess_type("music")}')
             st.markdown(f'<audio src="data:{guess_type("music")};base64,{b64encode(open("music", "rb").read()).decode()}" controlslist="nodownload" controls></audio>', True)
             return librosa.load('music', sr=sr, duration=30)[0]
         except:
