@@ -87,17 +87,18 @@ def table(n):
 @st.cache_data(max_entries=1)
 def music(m, n):
     if m:
-        #try:
-        if n == 'Web Service':
-            YouTube(m).streams.get_audio_only().download(filename='music') #YoutubeDL({'outtmpl': 'music', 'playlist_items': '1', 'overwrites': True, 'format': 'bestaudio', 'postprocessors': [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3'}], 'postprocessor_args': ['-ss', '0', '-t', '30']}).download([m])
-        elif n == 'Direct Link':
-            open('music', 'wb').write(get(m).content)
-        elif n == 'Audio File':
-            open('music', 'wb').write(m.getvalue())
-        st.markdown(f'<audio src="data:{guess_type("music")};base64,{b64encode(open("music", "rb").read()).decode()}" controlslist="nodownload" controls></audio>', True)
-        return librosa.load('music', sr=sr, duration=30)[0]
-        #except:
-            #st.error(f'Unable to access {m}')
+        try:
+            if n == 'Web Service':
+                YouTube(m).streams.get_audio_only().download(filename='music') #YoutubeDL({'outtmpl': 'music', 'playlist_items': '1', 'overwrites': True, 'format': 'bestaudio', 'postprocessors': [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3'}], 'postprocessor_args': ['-ss', '0', '-t', '30']}).download([m])
+            elif n == 'Direct Link':
+                open('music', 'wb').write(get(m).content)
+            elif n == 'Audio File':
+                open('music', 'wb').write(m.getvalue())
+            print(guess_type("music"))
+            st.markdown(f'<audio src="data:{guess_type("music")};base64,{b64encode(open("music", "rb").read()).decode()}" controlslist="nodownload" controls></audio>', True)
+            return librosa.load('music', sr=sr, duration=30)[0]
+        except:
+            st.error(f'Unable to access {m}')
     return numpy.empty(0)
 
 @st.cache_data(max_entries=3)
