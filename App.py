@@ -2,6 +2,7 @@ from datetime import time, timedelta
 from essentia import standard as es
 from statistics import median, mean
 from gdown import download_folder
+from mimetypes import guess_type
 from numpy.random import normal
 from numpy.linalg import norm
 from tensorflow import keras
@@ -89,11 +90,11 @@ def music(m, n):
             if n == 'Web Service':
                 yd.download([m])
             elif n == 'Direct Link':
-                open('music.mp3', 'wb').write(get(m).content)
+                open('music', 'wb').write(get(m).content)
             elif n == 'Audio File':
-                open('music.mp3', 'wb').write(m.getvalue())
-            st.markdown(f'<audio src="data:audio/mp3;base64,{b64encode(open("music.mp3", "rb").read()).decode()}" controlslist="nodownload" controls></audio>', True)
-            return librosa.load('music.mp3', sr=sr, duration=30)[0]
+                open('music', 'wb').write(m.getvalue())
+            st.markdown(f'<audio src="data:{guess_type("music")};base64,{b64encode(open("music", "rb").read()).decode()}" controlslist="nodownload" controls></audio>', True)
+            return librosa.load('music', sr=sr, duration=30)[0]
         except:
             st.error(f'Unable to access {m}')
     return numpy.empty(0)
