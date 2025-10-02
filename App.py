@@ -2,10 +2,8 @@ from datetime import time, timedelta
 from essentia import standard as es
 from statistics import median, mean
 from gdown import download_folder
-from mimetypes import guess_type
 from numpy.random import normal
 from numpy.linalg import norm
-from pytubefix import YouTube
 from tensorflow import keras
 from yt_dlp import YoutubeDL
 from base64 import b64encode
@@ -89,13 +87,12 @@ def music(m, n):
     if m:
         try:
             if n == 'Web Service':
-                YouTube(m).streams.get_audio_only().download(filename='music') #YoutubeDL({'outtmpl': 'music', 'playlist_items': '1', 'overwrites': True, 'format': 'bestaudio', 'postprocessors': [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3'}], 'postprocessor_args': ['-ss', '0', '-t', '30']}).download([m])
+                YoutubeDL({'outtmpl': 'music', 'playlist_items': '1', 'overwrites': True, 'format': 'bestaudio', 'postprocessors': [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3'}], 'postprocessor_args': ['-ss', '0', '-t', '30']}).download([m])
             elif n == 'Direct Link':
-                open('music', 'wb').write(get(m).content)
+                open('music.mp3', 'wb').write(get(m).content)
             elif n == 'Audio File':
-                open('music', 'wb').write(m.getvalue())
-            st.write(f'guess: {guess_type("music")}')
-            st.markdown(f'<audio src="data:{guess_type("music")};base64,{b64encode(open("music", "rb").read()).decode()}" controlslist="nodownload" controls></audio>', True)
+                open('music.mp3', 'wb').write(m.getvalue())
+            st.markdown(f'<audio src="data:audio/mp3;base64,{b64encode(open("music.mp3", "rb").read()).decode()}" controlslist="nodownload" controls></audio>', True)
             return librosa.load('music', sr=sr, duration=30)[0]
         except:
             st.error(f'Unable to access {m}')
