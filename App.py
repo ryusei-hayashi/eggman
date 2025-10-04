@@ -93,7 +93,7 @@ def music(m, n):
             elif n == 'Audio File':
                 open('music.mp3', 'wb').write(m.getvalue())
             st.markdown(f'<audio src="data:audio/mp3;base64,{b64encode(open("music.mp3", "rb").read()).decode()}" controlslist="nodownload" controls></audio>', True)
-            return librosa.load('music', sr=sr, duration=30)[0]
+            return librosa.load('music.mp3', sr=sr, duration=30)[0]
         except:
             st.error(f'Unable to access {m}')
     return numpy.empty(0)
